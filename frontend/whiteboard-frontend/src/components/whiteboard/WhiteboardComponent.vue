@@ -21,8 +21,8 @@
 
       <!-- Canvas size is defined in CSS, search for ".canvas" -->
 
-      <svg xmlns="http://www.w3.org/2000/svg" class="drawSvg" :width="canvasWidth"
-           :height="canvasHeight" viewBox="0 0 1000 1000" ref="svg" :style="{'background-color' : bgColor}"
+      <svg xmlns="http://www.w3.org/2000/svg" class="drawSvg" width="100%"
+           height="100%" viewBox="0 0 1000 1000" ref="svg" :style="{'background-color' : bgColor}"
            @mousedown="lineStart"
            @touchstart="lineStart"
            @mousemove="lineMove"
@@ -154,6 +154,8 @@ export default {
     }
   },
   mounted() {
+    console.log(this.canvasWidth)
+    console.log(this.canvasHeight)
     this.$refs.socket.connect()
   },
 
