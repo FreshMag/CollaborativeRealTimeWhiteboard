@@ -14,6 +14,7 @@ process.env.DB_ADDRESS = `mongodb://${process.env['DB_IP']}:27017/whiteboard-db`
  * Required packages
  */
 const express = require('express');
+const router = express.Router();
 const app = express();
 const cookieParser = require('cookie-parser');
 const {requestMethod} = require("./src/auth/requestMethod");
@@ -37,7 +38,6 @@ const corsOptions = {
 /*
  * Routers for this API
  */
-const indexRouter = require('./src/routes/indexRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const profileRoutes = require('./src/routes/profileRoutes');
 const whiteboardRoutes = require('./src/routes/whiteboardRoutes');
@@ -55,11 +55,11 @@ app.use(requestMethod);
 /*
  * ROUTES
  */
-app.use(indexRouter);
-app.use("/auth", authRoutes);
-app.use("/profile", profileRoutes);
-app.use("/whiteboard", whiteboardRoutes)
-app.use("/userSetting", userSettingsRoutes)
+router.use("/auth", authRoutes);
+router.use("/profile", profileRoutes);
+router.use("/whiteboard", whiteboardRoutes);
+router.use("/userSetting", userSettingsRoutes);
+app.use("/api", router);
 
 const server = http.createServer(app);
 

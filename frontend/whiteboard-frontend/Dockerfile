@@ -8,7 +8,7 @@ WORKDIR /app
 
 # copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
-ENV VUE_APP_BACKEND_IP=localhost
+ENV VUE_APP_BACKEND_IP=nginx
 # install project dependencies
 RUN npm install
 
