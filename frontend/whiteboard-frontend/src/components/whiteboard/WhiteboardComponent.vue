@@ -178,7 +178,7 @@ export default {
     initBoard: function () {
       this.board = $('.drawSvg')
       this.cursor = $('#cursor')
-      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/whiteboard/${this.$route.params.id}`, {
+      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/whiteboard/${this.$route.params.id}`, {
         params: {
           accessToken: localStorage.getItem("accessToken")
         }

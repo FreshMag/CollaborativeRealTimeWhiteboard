@@ -113,7 +113,7 @@ export default {
     methods: {
         getWhiteboards() {
             this.loading = true;
-            axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/`, {
+            axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/`, {
                 params: {
                     accessToken: localStorage.getItem("accessToken")
                 }
@@ -155,7 +155,7 @@ export default {
 
             if (this.whiteboardCreateName) {
                 this.loading = true;
-                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/createWhiteboard`, {
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/createWhiteboard`, {
                     accessToken: localStorage.getItem("accessToken"),
                     whiteboardName: this.whiteboardCreateName
                 }).then(response => {
@@ -185,7 +185,7 @@ export default {
         deleteWhiteboard() {
             const token = localStorage.getItem("accessToken");
             this.$refs.deleteModal.close();
-            axios.delete(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/deleteWhiteboard`, {
+            axios.delete(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/deleteWhiteboard`, {
                 "data": {
                     accessToken: token,
                     whiteboardId: this.deleteId
@@ -205,7 +205,7 @@ export default {
         },
         renameWhiteboard() {
             this.$refs.renameModal.close();
-            axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/updateWhiteboard`, {
+            axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/updateWhiteboard`, {
                 accessToken: localStorage.getItem("accessToken"),
                 whiteboardId: this.renameId,
                 newName: this.whiteboardRenameName

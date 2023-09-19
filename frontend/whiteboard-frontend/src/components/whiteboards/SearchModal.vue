@@ -128,7 +128,7 @@ export default {
             if (!query) {
                 this.foundUsers = [];
             } else {
-                axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/users`, {
+                axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/users`, {
                     params: {
                         accessToken: localStorage.getItem("accessToken"),
                         filters: { username: query, whiteboardId: this.whiteboardId }
@@ -143,14 +143,14 @@ export default {
             }
         },
         invite(username) {
-            axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/whiteboard/invite`, {
+            axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/whiteboard/invite`, {
                 accessToken: localStorage.getItem("accessToken"),
                 username: username,
                 whiteboardId: this.whiteboardId
             }).then(result => {
                 socket.emit("inviteCollaborator", localStorage.getItem("accessToken"), username);
 
-                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/addNotification/`, {
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/addNotification/`, {
                     accessToken: localStorage.getItem("accessToken"),
                     notification: { type: 'Whiteboard Sharing', time: new Date(), body: localStorage.getItem("username") + " invited you to collaborate on one of his whiteboards!", visualized: false },
                     username: username

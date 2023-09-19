@@ -52,7 +52,7 @@ export default {
     },
 
     getNotification() {
-      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/notifications/`, {
+      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/notifications/`, {
         params: {
           accessToken: localStorage.getItem("accessToken"),
         }
@@ -75,7 +75,7 @@ export default {
     },
     deleteNotification(id) {
       //start spinner
-      axios.delete(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/deleteNotifications/`, {
+      axios.delete(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/deleteNotifications/`, {
         params: {
           accessToken: localStorage.getItem("accessToken"),
           id: id
@@ -90,7 +90,7 @@ export default {
       })
     },
     setVisualized(id) {
-      axios.patch(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/updateNotification/`, {
+      axios.patch(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/updateNotification/`, {
         accessToken: localStorage.getItem("accessToken"),
         id: id
       }).then(() => {

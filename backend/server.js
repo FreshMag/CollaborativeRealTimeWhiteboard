@@ -28,7 +28,7 @@ const {Model} = require("./src/models/model");
 
 
 const corsOptions = {
-    origin: ["http://localhost:8080"],
+    origin: ["http://localhost:8080", "http://localhost:80"],
     credentials: true,
     exposedHeaders: ['set-cookie'],
 }

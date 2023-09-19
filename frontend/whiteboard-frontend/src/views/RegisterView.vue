@@ -86,7 +86,7 @@ export default {
         },
         submitForm: function () {
             const ref = this;
-            const req = axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/api/auth/register`, {
+            const req = axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/register`, {
                 username:this.username,
                 password:this.password,
                 first_name:this.name,
@@ -98,7 +98,7 @@ export default {
             });
             req.then(x => {
                 const ref = this;
-                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/api/auth/login`,
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/login`,
                 {
                     username: this.username,
                     password: this.password,

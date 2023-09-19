@@ -3,7 +3,7 @@ version: "3"
 services:
     # This service starts a static resource web server that will be used by clients
     nginx:
-        image: test/nginx:latest
+        image: whiteboard/nginx:latest
         build: ./nginx
         ports:
             - "80:80"
@@ -12,7 +12,7 @@ services:
                 aliases:
                     - nginx
     frontend:
-        image: progetto-distribuiti/frontend:latest
+        image: whiteboard/frontend:latest
         build: ./frontend/whiteboard-frontend
         networks:
             main:
@@ -25,7 +25,7 @@ services:
             - /usr/src/app/app/node_modules
     backend:
         hostname: collaborative_whiteboard_api
-        image: collaborative-whiteboard-api
+        image: whiteboard/backend:latest
         build: ./backend
         networks:
             main:
