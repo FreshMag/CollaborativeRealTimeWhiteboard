@@ -70,7 +70,7 @@
 </template>
 <script>
 import axios from "axios";
-import {socket, state} from "@/scripts/socket";
+import {socket} from "@/scripts/socket";
 import BootstrapIcon from "@/components/common/BootstrapIcon.vue";
 import NavbarUserDropdown from "@/components/navbar/NavbarUserDropdown.vue";
 export default {
@@ -226,8 +226,13 @@ li {
 
 @media (max-width: 1002px) {
 
+  .collapse:not(.show) {
+    display: none !important;
+  }
+
   .menu-mobile {
     display: flex;
+    margin: auto;
     justify-content: center;
     align-items: center;
   }
