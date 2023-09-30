@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const request = require("supertest");
+
 const {TestModel} = require("../src/models/testModel");
 require("dotenv").config();
 let db;
@@ -37,5 +37,22 @@ describe("POST /api/createWhiteboard", () => {
                 expect(whiteboard.name).toBe("Whiteboard 0");
             });
         });
+        this.db.createWhiteboard("Whiteboard 1", "user1").then((toCreate) => {
+            this.db.findOneWhiteboard(toCreate.id).then((whiteboard) => {
+                expect(whiteboard.id).toBe(toCreate.id);
+                expect(whiteboard.name).toBe("Whiteboard 1");
+            });
+        });
     });
 });
+
+describe("DELETE /api/deleteWhiteboard", () => {
+    it("Test Whiteboard Delete", async () => {
+        this.db.deleteWhiteboard(0).then(() => {
+            this.db.findOneWhiteboard(0).then((whiteboard) => {
+                expect(whiteboard).toBe(undefined);
+            });
+        });
+    });
+});
+
