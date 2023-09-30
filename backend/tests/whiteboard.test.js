@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 const request = require("supertest");
 const {TestModel} = require("../src/models/testModel");
-const server = require("../server");
 require("dotenv").config();
 let db;
-beforeEach(async () => {
+beforeAll(async () => {
     this.db = TestModel;
 });
 
@@ -30,8 +29,13 @@ describe("POST /api/register", () => {
     });
 });
 
-describe("GET /api/", () => {
-    it("should return all products", async () => {
-        expect(200).toBe(200);
+describe("POST /api/createWhiteboard", () => {
+    it("Test Whiteboard Creation", async () => {
+        this.db.createWhiteboard("Whiteboard 0", "user1").then((toCreate) => {
+            this.db.findOneWhiteboard(toCreate.id).then((whiteboard) => {
+                expect(whiteboard.id).toBe(toCreate.id);
+                expect(whiteboard.name).toBe("Whiteboard 0");
+            });
+        });
     });
 });
