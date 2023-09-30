@@ -4,10 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "testAuth": "cd src/auth; cd test; node auth_test.js",
-    "testRealtime": "cd src/realtime/api/test; node test.js"
+    "test": "cross-env NODE_ENV=test jest --testTimeout=5000",
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,11 +14,14 @@
     "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.2",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.1",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
