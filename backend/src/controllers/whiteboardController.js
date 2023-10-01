@@ -73,6 +73,14 @@ exports.inviteToWhiteboard = (req, res) => {
     THESE ARE THE ONES FOR SOCKET IO
     ----------------------------------------------------------------------------------------------------------------
 */
+
+/**
+ * TODO
+ * @author
+ * @param accessToken
+ * @param whiteboardId
+ * @param callback
+ */
 exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
     authZ.normalUserToWhiteboard(accessToken, whiteboardId).then(result => {
         const {err, username} = result;
@@ -84,6 +92,14 @@ exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
     })
 }
 
+/**
+ * TODO
+ * @author
+ * @param line
+ * @param accessToken
+ * @param whiteboardId
+ * @param callback
+ */
 exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
     authZ.authorizeNewLine(accessToken, whiteboardId).then(result => {
         const {err} = result;   // the authorizer generates fresh new line id
@@ -97,12 +113,27 @@ exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
     })
 }
 
-// maybe unnecessary
+/**
+ * TODO
+ * @author
+ * @param line
+ * @param lineId
+ * @param whiteboardId
+ * @param callback
+ */
 exports.lineMove = (line, lineId, whiteboardId, callback) => {
     const {point, color} = line;
     callback();
 }
-
+/**
+ * TODO
+ * @author
+ * @param line
+ * @param accessToken
+ * @param lineId
+ * @param whiteboardId
+ * @param callback
+ */
 exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
     authZ.authorizeLineEnd(accessToken, lineId, whiteboardId).then(result => {
         if (result.err) {
@@ -120,6 +151,14 @@ exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
     });
 }
 
+/**
+ * TODO
+ * @author
+ * @param lineId
+ * @param accessToken
+ * @param whiteboardId
+ * @param callback
+ */
 exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
     authZ.authorizeLineDelete(accessToken, lineId, whiteboardId).then(result => {
         if (result.err) {
@@ -136,6 +175,12 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
     });
 }
 
+/**
+ * TODO
+ * @author
+ * @param accessToken
+ * @param callback
+ */
 exports.checkToken = (accessToken, callback) =>{
     auth.validateAccessToken(accessToken).then(result => {
         if(result.err){

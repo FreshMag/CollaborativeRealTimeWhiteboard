@@ -16,4 +16,9 @@ router.route('/logout')
 
 router.route('/refresh')
     .post(authController.refresh)
+
+/**
+ * TODO
+ * @type {Router}
+ */
 module.exports = router;

@@ -2,6 +2,10 @@ const {Server} = require('socket.io')
 const {logYellow, log, logErr, logCyan, logConnected, logSuccess, logExited, logDisconnected, logJoinedApp} = require("../../util/consoleUtil");
 
 
+/**
+ * TODO
+ * @type {{JOIN_APP: (function(*): void), EXIT_APP: (function(*): void), ERR: (function(*): void), JOIN_WHITEBOARD: (function(*): void), CONNECTED: (function(*): void), DISCONNECT: (function(*): void), INVITE: (function(*): void), EXIT_WHITEBOARD: (function(*): void)}}
+ */
 const LogType = {
     ERR: logErr,
     JOIN_APP: logJoinedApp,
@@ -13,8 +17,11 @@ const LogType = {
     DISCONNECT: logDisconnected
 }
 
-
-exports.Realtime = class Realtime {
+/**
+ * TODO
+ * @type {Class}
+ */
+module.exports = class Realtime {
     constructor(server, controller) {
         // Create an io server and allow for CORS from http://localhost:3000 with GET and POST methods
         this.io = new Server(server, {
@@ -33,6 +40,9 @@ exports.Realtime = class Realtime {
         logType(message);
     }
 
+    /**
+     * TODO
+     */
     listen() {
 
         // Listen for when the client connects via socket.io-client
@@ -80,6 +90,11 @@ exports.Realtime = class Realtime {
         });
     }
 
+    /**
+     * TODO
+     * @param socket
+     * @param username
+     */
     joinApplication(socket, username) {
         this.applicationData[username] = socket;
         this.log(`${username} has connected to the application. Socket ID : ${socket.id}`, LogType.JOIN_APP);
@@ -122,6 +137,12 @@ exports.Realtime = class Realtime {
         });
     }
 
+    /**
+     * TODO
+     * @param socket
+     * @param username
+     * @param room
+     */
     joinWhiteboard(socket, username, room) {
 
         socket.join(room);

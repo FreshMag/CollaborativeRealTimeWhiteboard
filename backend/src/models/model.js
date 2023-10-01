@@ -4,6 +4,9 @@ const {User, Whiteboard, Notification} = require("../models/dbModel");
 const {checkContains} = require("../util/arrayUtil")
 const bcrypt = require("bcrypt");
 
+/**
+ * TODO
+ */
 class RealDb {
     constructor() {
         this.dbAddress = process.env.DB_ADDRESS;

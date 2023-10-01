@@ -8,4 +8,8 @@ router.route("/invite")
 router.route("/:id")
     .get(whiteboardController.getWhiteboardData)
 
+/**
+ * TODO
+ * @type {Router}
+ */
 module.exports = router;

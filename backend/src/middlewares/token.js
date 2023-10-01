@@ -2,7 +2,12 @@ const {auth} = require("../controllers/authController");
 const {log} = require("../util/consoleUtil");
 
 
-
+/**
+ * TODO
+ * @param req
+ * @param res
+ * @param next
+ */
 exports.tokenValidator = (req, res, next) => {
   const token = getToken(req)
   log("Checking token: " + token?.substring(0, 10) + "...")
@@ -20,11 +25,16 @@ exports.tokenValidator = (req, res, next) => {
       }
     })
   } else {
-    return res.status(401).json({message: "Missing access token in the request"});
+    res.status(401).json({message: "Missing access token in the request"});
   }
 }
 
 
+/**
+ * TODO
+ * @param req
+ * @returns {*|null|string}
+ */
 const getToken = (req) => {
   if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') { // Authorization: Bearer ...
     // Handle token presented as a Bearer token in the Authorization header

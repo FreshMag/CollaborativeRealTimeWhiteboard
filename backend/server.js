@@ -67,7 +67,7 @@ const server = http.createServer(app);
 /*
  * REAL-TIME ENVIRONMENT (example)
  */
-const {Realtime} = require('./src/realtime/api/Realtime');
+const Realtime = require('./src/realtime/api/Realtime');
 const whiteboardController = require("./src/controllers/whiteboardController");
 const {createTestEnvironment} = require("./src/auth/test/testUtility");
 const rt = new Realtime(server, whiteboardController);

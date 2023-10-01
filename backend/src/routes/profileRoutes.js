@@ -32,4 +32,9 @@ router.route('/updateNotification')
 router.route("/unreadNotifications")
     .get(profileController.getUnreadNotification);
 
+
+/**
+ *
+ * @type {Router}
+ */
 module.exports = router;

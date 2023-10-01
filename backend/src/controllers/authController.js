@@ -1,11 +1,18 @@
 const {Authenticator} = require( "../auth/Authenticator");
 const {Model} = require ("../models/model");
 const {log, logErr} = require("../util/consoleUtil");
+const {Request, Response} = require("express")
 
 const auth = new Authenticator(Model);
 exports.auth = auth;
 const SECURE_COOKIE = true; // if set to true, the cookie will be accessible only through https (not development mode)
 
+/**
+ * TODO
+ * @author TODO
+ * @param req {Request} - Express request
+ * @param res {Response} - Express response
+ */
 exports.refresh = (req, res) => {
     try {
         if (req.cookies.refreshToken && req.body.accessToken) {
@@ -29,6 +36,12 @@ exports.refresh = (req, res) => {
     }
 }
 
+/**
+ * TODO
+ * @author TODO
+ * @param req {Request} - Express request
+ * @param res {Response} - Express response
+ */
 exports.logout = (req, res) => {
     try {
         if (req.cookies?.refreshToken) {
@@ -42,6 +55,12 @@ exports.logout = (req, res) => {
     }
 }
 
+/**
+ * TODO
+ * @author TODO
+ * @param req {Request} - Express request
+ * @param res {Response} - Express response
+ */
 exports.register = (req, res) => {
     try {
         if (req.body.username && req.body.password && req.body.first_name && req.body.last_name) {
@@ -77,6 +96,12 @@ exports.register = (req, res) => {
     }
 }
 
+/**
+ * TODO
+ * @author TODO
+ * @param req {Request} - Express request
+ * @param res {Response} - Express response
+ */
 exports.login = (req, res) => {
     try {
         if (req.body.username && req.body.password) {

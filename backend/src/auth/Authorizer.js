@@ -3,11 +3,27 @@ const {Model} = require("../models/model");
 
 const OWNER = 0;
 const NORMAL = 1;
+/**
+ * TODO
+ * @type {Authorizer}
+ */
 module.exports = class Authorizer {
+    /**
+     * TODO
+     * @param model
+     */
     constructor(model) {
         this.model = model;
         this.accessKey = process.env.ACCESS_TOKEN_KEY;
     }
+
+    /**
+     * TODO
+     * @param level
+     * @param accessToken
+     * @param whiteboardId
+     * @returns {Promise<{err: string}|{username}>}
+     */
      async userToWhiteboard(level, accessToken, whiteboardId) {
         if (!accessToken || !(whiteboardId !== undefined)) {
             return {err: "Please input accessToken and whiteboardId"};
