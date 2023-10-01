@@ -22,8 +22,7 @@ const http = require('http');
 const cors = require('cors');
 
 const {printServerStart} = require("./src/util/consoleUtil");
-
-const {Model} = require("./src/models/model");
+const {tokenValidator} = require("./src/middlewares/token")
 
 
 
@@ -49,8 +48,10 @@ const userSettingsRoutes = require('./src/routes/userSettingsRoutes');
 app.use(cors(corsOptions)); // Add cors middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.json())
 app.use(requestMethod);
+app.use("/api/profile", tokenValidator)
+app.use("/api/whiteboard", tokenValidator)
+app.use("/api/userSetting", tokenValidator)
 
 /*
  * ROUTES

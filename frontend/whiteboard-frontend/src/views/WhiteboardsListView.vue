@@ -2,7 +2,7 @@
     <div class="container text-start">
         <Alert v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}"></Alert>
 
-        <WhiteboardsListComponent v-bind:addProps="addProps" @add-whiteboard=""></WhiteboardsListComponent>
+        <WhiteboardsListComponent v-bind:addProps="addProps"></WhiteboardsListComponent>
 
         <SearchModal v-bind:name="whiteboardInviteName" v-bind:whiteboard-id="inviteId"
                      @invited="getWhiteboards"></SearchModal>
@@ -114,8 +114,8 @@ export default {
         getWhiteboards() {
             this.loading = true;
             axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/`, {
-                params: {
-                    accessToken: localStorage.getItem("accessToken")
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
                 }
             }).then(response => {
                 this.isReady = true;
@@ -155,10 +155,13 @@ export default {
 
             if (this.whiteboardCreateName) {
                 this.loading = true;
-                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/createWhiteboard`, {
-                    accessToken: localStorage.getItem("accessToken"),
-                    whiteboardName: this.whiteboardCreateName
-                }).then(response => {
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/createWhiteboard`,{
+                  whiteboardName: this.whiteboardCreateName
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                  }
+                }).then(() => {
                     this.whiteboardCreateName = "";
                     this.alertOn = false;
                     this.loading = false;
@@ -186,11 +189,13 @@ export default {
             const token = localStorage.getItem("accessToken");
             this.$refs.deleteModal.close();
             axios.delete(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/deleteWhiteboard`, {
-                "data": {
-                    accessToken: token,
+              headers: {
+                  Authorization: `Bearer ${token}`
+              },
+              data: {
                     whiteboardId: this.deleteId
                 }
-            }).then(result => {
+            }).then(() => {
                 this.deleteId = -1;
                 this.getWhiteboards();
             }).catch(error => {
@@ -206,10 +211,13 @@ export default {
         renameWhiteboard() {
             this.$refs.renameModal.close();
             axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/updateWhiteboard`, {
-                accessToken: localStorage.getItem("accessToken"),
                 whiteboardId: this.renameId,
                 newName: this.whiteboardRenameName
-            }).then(response => {
+            }, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+              }
+            }).then(() => {
                 this.getWhiteboards();
                 this.loading = false;
                 this.whiteboardRenameName = "";

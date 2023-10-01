@@ -13,7 +13,7 @@
       </div>
 
       <ul class="links-desktop nav nav-pills col text-center align-items-center justify-content-center ">
-        <li v-for="link in this.links">
+        <li v-for="link in this.links" v-bind:key="link.name">
             <router-link v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)"
                       :to="link.href" class="nav-item nav-link px-2 navbar-links">{{link.name}}</router-link></li>
 
@@ -48,7 +48,7 @@
       <div class="collapse menu-mobile" id="menuMobileCollapse" ref="collapse">
         <div class="collapse-body">
           <ul>
-            <li v-for="link in this.links">
+            <li v-for="link in this.links" v-bind:key="link.name">
               <div v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)">
                 <router-link :to="link.href" class="navbar-links" @click="this.collapse">{{ link.name }}</router-link>
                 <hr/>
@@ -105,8 +105,8 @@ export default {
         },
         loadUnreadNotification(){
             axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/unreadNotifications/`, {
-                params: {
-                    accessToken: localStorage.getItem("accessToken"),
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 }
             }).then(response => {
                 this.unreadMessage = response.data.number;
