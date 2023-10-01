@@ -1,6 +1,7 @@
 const {Request, Response} = require('express');
 const {Model} = require ("../models/model");
 const {authZ} = require('./whiteboardController')
+const {fail, failMissingElement, tryAuthorizeToWhiteboard} = require("./utility/shortcuts");
 
 const DEFAULT_WHITEBOARD_NAME = "Lavagna di Prova";
 
@@ -53,10 +54,13 @@ exports.createWhiteboard = (req, res) => {
  * @param res {Response} - Express response, responds with <code>message</code>
  */
 exports.updateWhiteboard = (req, res) => {
-    if (!req.body.whiteboardId) {
-        failMissingId(res)
+    if (!res.locals.accessToken) {
+        fail(res)
+    } else if (!req.body.whiteboardId) {
+        failMissingElement(res)
     } else {
-        authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(() => {
+        const {accessToken} = res.locals;
+        tryAuthorizeToWhiteboard(res, req.body.whiteboardId, accessToken, authZ.ownerToWhiteboard, authZ, () => {
             Model.updateWhiteboard(req.body.whiteboardId, req.body.newName).then(() => {
                 res.status(200).json({message: "Whiteboard updated successfully"});
             })
@@ -75,10 +79,10 @@ exports.deleteWhiteboard = (req, res) => {
     if (!res.locals.accessToken) {
         fail(res)
     } else if (!req.body.whiteboardId) {
-        failMissingId(res)
+        failMissingElement(res)
     } else {
         const {accessToken} = res.locals;
-        authZ.ownerToWhiteboard(accessToken, req.body.whiteboardId).then(() => {
+        tryAuthorizeToWhiteboard(res, req.body.whiteboardId, accessToken, authZ.ownerToWhiteboard, authZ, () => {
             Model.deleteWhiteboard(req.body.whiteboardId).then(() => {
                 res.status(200).json({message: "Whiteboard deleted successfully"});
             })
@@ -164,11 +168,11 @@ exports.deleteNotification = (req, res) => {
     if (!res.locals.user) {
         fail(res);
     } else if (!req.query.id) {
-        failMissingId(res, "notification")
+        failMissingElement(res, "notification")
     } else {
         const {user} = res.locals;
         Model.deleteNotification(req.query.id, user.username).then((result) => {
-            if (result.err) {
+            if (result?.err || !result) {
                 fail(res)
             } else {
                 res.status(200).json({message: "Notification deleted successfully"});
@@ -185,7 +189,7 @@ exports.deleteNotification = (req, res) => {
  */
 exports.updateNotification = (req, res) => {
     if (!req.body.id) {
-        failMissingId(res, "notification")
+        failMissingElement(res, "notification")
     } else {
         Model.updateNotification(req.body.id).then(() => {
             res.status(200).json({message: "Notification updated successfully"});
@@ -211,19 +215,3 @@ exports.getUnreadNotification = (req, res) => {
     }
 }
 
-/**
- * Shortcut function for sending an Internal Server Error response
- * @param res {Response} - Express response
- */
-function fail(res) {
-    res.status(500).json({message: "Something went wrong"})
-}
-
-/**
- * Shortcut function for sending a Bad Request response, specifically cause of missing ids in the request
- * @param res {Response} - Express response
- * @param entity {String?} - Entity whose id is missing in the request
- */
-function failMissingId(res, entity) {
-    res.status(400).json({message: `Missing ID of the ${entity ? entity : "whiteboard"} in the request`})
-}

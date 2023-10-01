@@ -222,10 +222,10 @@ class RealDb {
             const user = this.findOneUser(username)
             // remove the notification from all the profiles
             if (notification && user) {
-                await Notification.findByIdAndDelete(notificationId);
+                return await Notification.findByIdAndDelete(notificationId);
             }
         } catch (e) {
-            console.error(e);
+            return {err: e}
         }
     }
 

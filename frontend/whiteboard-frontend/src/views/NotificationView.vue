@@ -93,6 +93,7 @@ export default {
     setVisualized(id) {
       axios.patch(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/updateNotification/`, {
         id: id,
+      }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }

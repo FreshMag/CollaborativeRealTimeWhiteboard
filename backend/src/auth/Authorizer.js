@@ -3,7 +3,7 @@ const {Model} = require("../models/model");
 
 const OWNER = 0;
 const NORMAL = 1;
-exports.Authorizer = class {
+module.exports = class Authorizer {
     constructor(model) {
         this.model = model;
         this.accessKey = process.env.ACCESS_TOKEN_KEY;
