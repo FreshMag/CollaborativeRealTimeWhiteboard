@@ -81,3 +81,5 @@ server.listen(PORT, async () => {
         await createTestEnvironment();
     }
 });
+
+module.exports = server
