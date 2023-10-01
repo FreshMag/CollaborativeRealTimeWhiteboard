@@ -130,12 +130,13 @@ export default {
     },
     updateUserInfo() {
       axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/userSetting/updateInfo`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        },
         first_name: this.name,
         last_name: this.surname,
         username: this.email
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
       }).then(response => {
         this.currentName = this.name
         this.currentSurname = this.surname
@@ -155,11 +156,12 @@ export default {
     },
     updatePassword() {
       axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/userSetting/updatePassword`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        },
         password: this.$refs.newPassword.value,
         username: this.email
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
       }).then(() => {
         this.isValid = true
         this.isInvalid = false
