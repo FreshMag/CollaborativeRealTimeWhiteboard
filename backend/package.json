@@ -7,11 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "testAuth": "cd src/auth; cd test; node auth_test.js",
-    "testRealtime": "cd src/realtime/api/test; node test.js"
+    "testRealtime": "cd src/realtime/api/test; node test.js",
+    "doc": "jsdoc -c ./conf.json -r"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/express": "^4.17.18",
     "bcrypt": "^5.1.0",
     "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",

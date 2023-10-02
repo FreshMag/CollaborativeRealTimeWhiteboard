@@ -3,7 +3,7 @@
     <h2>There are no notifications to display</h2>
     <img src="../assets/nothing_here.png" alt="no notification image" class="center">
   </div>
-  <div class="row p-2" v-for="notif in notification">
+  <div class="row p-2" v-for="notif in notification" v-bind:key="notif._id">
     <div class="d-flex justify-content-center align-items-center w-100">
       <div class="toast position-relative">
         <div class="toast-header">
@@ -25,7 +25,6 @@
 <script>
 
 import axios from "axios";
-import { Toast } from "bootstrap";
 
 export default {
   name: "NotificationView",
@@ -52,9 +51,9 @@ export default {
     },
 
     getNotification() {
-      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/notifications/`, {
-        params: {
-          accessToken: localStorage.getItem("accessToken"),
+      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/notifications/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }
       }).then(response => {
         this.notification = response.data.notification;
@@ -75,10 +74,12 @@ export default {
     },
     deleteNotification(id) {
       //start spinner
-      axios.delete(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/deleteNotifications/`, {
+      axios.delete(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/deleteNotifications/`, {
         params: {
-          accessToken: localStorage.getItem("accessToken"),
           id: id
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }
       }).then(() => {
         // stop spinner
@@ -90,9 +91,12 @@ export default {
       })
     },
     setVisualized(id) {
-      axios.patch(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/updateNotification/`, {
-        accessToken: localStorage.getItem("accessToken"),
-        id: id
+      axios.patch(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/updateNotification/`, {
+        id: id,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
       }).then(() => {
         this.$emit('updateNotificationBadge');
       }).catch(error => {

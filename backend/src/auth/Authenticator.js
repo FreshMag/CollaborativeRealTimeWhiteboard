@@ -1,7 +1,16 @@
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
+
+/**
+ * TODO
+ * @type {exports.Authenticator}
+ */
 exports.Authenticator = class Authenticator {
+    /**
+     * TODO
+     * @param model
+     */
     constructor(model) {
         this.model = model;
         this.refreshTokenKey = process.env.REFRESH_TOKEN_KEY;
@@ -10,6 +19,11 @@ exports.Authenticator = class Authenticator {
         this.refreshTokenExpiration = "7d";
     }
 
+    /**
+     * TODO
+     * @param userData
+     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     */
     async register(userData) {
         // Our register logic starts here
         try {
@@ -46,6 +60,11 @@ exports.Authenticator = class Authenticator {
         }
     }
 
+    /**
+     * TODO
+     * @param userData
+     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     */
     async login(userData) {
 
         if (!(userData.username && userData.password)) {
@@ -79,6 +98,12 @@ exports.Authenticator = class Authenticator {
         return {user:"", err: "User not registered or wrong password"}
     }
 
+
+    /**
+     *
+     * @param token
+     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     */
     async validateRefreshToken(token) {
         if (!token) {
             return {user:undefined,err: "A token is required for authentication"};
@@ -97,6 +122,11 @@ exports.Authenticator = class Authenticator {
         }
     }
 
+    /**
+     * TODO
+     * @param token
+     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     */
     async refreshToken(token) {
         return this.validateRefreshToken(token).then(result => {
             if (result.err) {
@@ -113,7 +143,12 @@ exports.Authenticator = class Authenticator {
             }
         })
     }
-    // granting authorization NOT authentication
+
+    /**
+     * TODO
+     * @param token
+     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     */
     async validateAccessToken(token) {
         if (!token) {
             return {user:undefined,err: "A token is required for authorization"};

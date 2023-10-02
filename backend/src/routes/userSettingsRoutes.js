@@ -8,6 +8,10 @@ router.route('/updateInfo')
     .put(userSettingController.updateInfo);
 router.route('/updatePassword')
     .put(userSettingController.updatePassword);
-    
 
+
+/**
+ * TODO
+ * @type {Router}
+ */
 module.exports = router;

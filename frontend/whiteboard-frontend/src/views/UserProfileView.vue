@@ -29,7 +29,7 @@
         <div class="input-group mb-3">
           <input disabled v-model="email" type="email" class="form-control" placeholder="email" aria-label="Email">
         </div>
-        <p clsss="mb-2"><strong>Name</strong></p>
+        <p class="mb-2"><strong>Name</strong></p>
         <div class="input-group flex-nowrap mb-3">
           <input @input="checkChanges" v-model="name" type="text" class="form-control" placeholder="first name"
             aria-label="First name">
@@ -86,12 +86,10 @@
 <script>
 
 import axios from "axios";
-import FooterComponent from "@/components/common/FooterComponent.vue"
 import IdenticonComponent from "@/components/common/Identicon.vue";
 export default {
   name: 'UserProfileView',
   components: {
-    FooterComponent,
     IdenticonComponent
   },
   emits: ['onChangedInfo'],
@@ -114,9 +112,9 @@ export default {
       window.scrollTo(0, 0);
     },
     getUserData() {
-      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/userSetting/`, {
-        params: {
-          accessToken: localStorage.getItem("accessToken")
+      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/userSetting/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }
       }).then(response => {
         const user = response.data
@@ -131,11 +129,14 @@ export default {
       })
     },
     updateUserInfo() {
-      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/userSetting/updateInfo`, {
-        accessToken: localStorage.getItem("accessToken"),
+      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/userSetting/updateInfo`, {
         first_name: this.name,
         last_name: this.surname,
         username: this.email
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
       }).then(response => {
         this.currentName = this.name
         this.currentSurname = this.surname
@@ -146,7 +147,7 @@ export default {
         this.$emit("onChangedInfo", user.first_name);
         this.checkChanges()
         this.scrollToTop()
-      }).catch(error => {
+      }).catch(() => {
         this.isInvalid = true
         this.isValid = false
         this.scrollToTop()
@@ -154,11 +155,14 @@ export default {
 
     },
     updatePassword() {
-      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/userSetting/updatePassword`, {
-        accessToken: localStorage.getItem("accessToken"),
+      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/userSetting/updatePassword`, {
         password: this.$refs.newPassword.value,
         username: this.email
-      }).then(response => {
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
+      }).then(() => {
         this.isValid = true
         this.isInvalid = false
         this.scrollToTop()

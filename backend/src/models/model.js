@@ -1,9 +1,12 @@
-const {log, logSuccess} = require("../util/consoleUtil");
+const {logSuccess} = require("../util/consoleUtil");
 const mongoose = require("mongoose");
 const {User, Whiteboard, Notification} = require("../models/dbModel");
 const {checkContains} = require("../util/arrayUtil")
 const bcrypt = require("bcrypt");
 
+/**
+ * TODO
+ */
 class RealDb {
     constructor() {
         this.dbAddress = process.env.DB_ADDRESS;
@@ -57,8 +60,14 @@ class RealDb {
         const user = await this.findOneUser(username);
         const hashedPassword = await bcrypt.hash(password, 10);
         if(user) {
-            await User.findByIdAndUpdate(user._id, {password: hashedPassword},
-                {returnDocument: 'after'});
+            try {
+                return (await User.findByIdAndUpdate(user._id, {password: hashedPassword},
+                    {returnDocument: 'after'}));
+            } catch (e) {
+                return {err: e}
+            }
+        } else {
+            return {err: "Username does not exists"}
         }
     }
 
@@ -73,8 +82,7 @@ class RealDb {
                 users: [userId]
             }
             try{
-                const currentWhiteboard  = await new Whiteboard(toCreate).save();
-                return currentWhiteboard;
+                return (await new Whiteboard(toCreate).save());
             }catch (e){
                 console.log(e);
                 return e;
@@ -104,8 +112,7 @@ class RealDb {
     }
 
     async generateFreshLineId(whiteboardId) {
-        const lineId = await new mongoose.Types.ObjectId();
-        return lineId;
+        return (await new mongoose.Types.ObjectId());
     }
 
     async insertLine(whiteboardId, lineId, line){
@@ -222,10 +229,10 @@ class RealDb {
             const user = this.findOneUser(username)
             // remove the notification from all the profiles
             if (notification && user) {
-                await Notification.findByIdAndDelete(notificationId);
+                return await Notification.findByIdAndDelete(notificationId);
             }
         } catch (e) {
-            console.error(e);
+            return {err: e}
         }
     }
 

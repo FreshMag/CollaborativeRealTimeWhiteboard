@@ -128,9 +128,11 @@ export default {
             if (!query) {
                 this.foundUsers = [];
             } else {
-                axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/users`, {
-                    params: {
-                        accessToken: localStorage.getItem("accessToken"),
+                axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/users`, {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                  },
+                  params: {
                         filters: { username: query, whiteboardId: this.whiteboardId }
                     }
                 }).then(response => {
@@ -143,17 +145,27 @@ export default {
             }
         },
         invite(username) {
-            axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/whiteboard/invite`, {
-                accessToken: localStorage.getItem("accessToken"),
-                username: username,
-                whiteboardId: this.whiteboardId
-            }).then(result => {
+            axios.put(`http://${process.env.VUE_APP_BACKEND_IP}/api/whiteboard/invite`,{
+              username: username,
+              whiteboardId: this.whiteboardId
+            }, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+              }
+            }).then(() => {
                 socket.emit("inviteCollaborator", localStorage.getItem("accessToken"), username);
 
-                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/addNotification/`, {
-                    accessToken: localStorage.getItem("accessToken"),
-                    notification: { type: 'Whiteboard Sharing', time: new Date(), body: localStorage.getItem("username") + " invited you to collaborate on one of his whiteboards!", visualized: false },
-                    username: username
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/addNotification/`, {
+                  notification: {
+                    type: 'Whiteboard Sharing', time: new Date(),
+                    body: localStorage.getItem("username") + " invited you to collaborate on one of his whiteboards!",
+                    visualized: false
+                  },
+                  username: username
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                  }
                 })
 
                 this.$emit("invited", username);

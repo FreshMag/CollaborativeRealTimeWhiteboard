@@ -13,7 +13,7 @@
       </div>
 
       <ul class="links-desktop nav nav-pills col text-center align-items-center justify-content-center ">
-        <li v-for="link in this.links">
+        <li v-for="link in this.links" v-bind:key="link.name">
             <router-link v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)"
                       :to="link.href" class="nav-item nav-link px-2 navbar-links">{{link.name}}</router-link></li>
 
@@ -48,7 +48,7 @@
       <div class="collapse menu-mobile" id="menuMobileCollapse" ref="collapse">
         <div class="collapse-body">
           <ul>
-            <li v-for="link in this.links">
+            <li v-for="link in this.links" v-bind:key="link.name">
               <div v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)">
                 <router-link :to="link.href" class="navbar-links" @click="this.collapse">{{ link.name }}</router-link>
                 <hr/>
@@ -70,7 +70,7 @@
 </template>
 <script>
 import axios from "axios";
-import {socket, state} from "@/scripts/socket";
+import {socket} from "@/scripts/socket";
 import BootstrapIcon from "@/components/common/BootstrapIcon.vue";
 import NavbarUserDropdown from "@/components/navbar/NavbarUserDropdown.vue";
 export default {
@@ -104,9 +104,9 @@ export default {
           this.unreadMessage++;
         },
         loadUnreadNotification(){
-            axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/unreadNotifications/`, {
-                params: {
-                    accessToken: localStorage.getItem("accessToken"),
+            axios.get(`http://${process.env.VUE_APP_BACKEND_IP}/api/profile/unreadNotifications/`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 }
             }).then(response => {
                 this.unreadMessage = response.data.number;
@@ -117,7 +117,7 @@ export default {
         },
         reloadNavbar() {
             if (localStorage.getItem('accessToken') && !this.isLogged) {
-                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/refresh`, {
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/refresh`, {
                     accessToken: localStorage.getItem('accessToken'),
                 }, {
                     headers: {
@@ -133,7 +133,7 @@ export default {
                     this.$forceUpdate();
                     // REFRESH TOKEN EVERY 8 minutes (or so)
                     setInterval(() => {
-                        axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/refresh`, {
+                        axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/refresh`, {
                             accessToken: localStorage.getItem('accessToken'),
                         }, {
                             headers: {
@@ -226,8 +226,13 @@ li {
 
 @media (max-width: 1002px) {
 
+  .collapse:not(.show) {
+    display: none !important;
+  }
+
   .menu-mobile {
     display: flex;
+    margin: auto;
     justify-content: center;
     align-items: center;
   }

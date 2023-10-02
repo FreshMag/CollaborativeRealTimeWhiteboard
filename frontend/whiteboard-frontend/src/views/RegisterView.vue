@@ -86,20 +86,19 @@ export default {
         },
         submitForm: function () {
             const ref = this;
-            const req = axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/register`, {
+            const req = axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/register`, {
                 username:this.username,
                 password:this.password,
                 first_name:this.name,
                 last_name:this.lastName
-            }).then(function (response) {
+            }).then(() => {
             }).catch(function (error) {
                 ref.showAlert = true;
                 ref.alertMessage = error.response.data.message ? error.response.data.message : "There was an error";
             });
-            req.then(x => {
-                const ref = this;
-                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/login`,
-                {
+            req.then(() => {
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/login`,
+                    {
                     username: this.username,
                     password: this.password,
                 }, {withCredentials: true}).then(response => {
@@ -107,7 +106,7 @@ export default {
                     localStorage.setItem('name', response.data.name);
                     this.$router.replace({ path: '/whiteboards' })
                     this.$emit("onLogin")
-                }).catch(error => {
+                }).catch(() => {
                     this.isInvalid = true;
                 });
             })
