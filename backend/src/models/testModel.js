@@ -89,7 +89,6 @@ class Db {
 
     async deleteWhiteboard(whiteboardId) {
         const whiteboard = this.whiteBoards[whiteboardId];
-        log(`Deleting ${whiteboardId}`)
         // remove the whiteboard from all the profiles
         if (whiteboard) {
             for (let i = 0; i < whiteboard.users.length; i++) {
