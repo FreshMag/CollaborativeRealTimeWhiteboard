@@ -1,12 +1,17 @@
 const {auth} = require("../controllers/authController");
 const {log} = require("../util/consoleUtil");
+const {Request, Response} = require("express");
 
 
 /**
- * TODO
- * @param req
- * @param res
- * @param next
+ * Useful middleware used for protected routes. It checks for the access token and validates it. It immediately responds
+ * with status 401 + a <code>message</code> either if the token is not valid or if it's not present in the request. In
+ * case of success, it sets 2 locals inside <code>res</code>, <code>user</code> and <code>accessToken</code>, useful for
+ * the following handling process.
+ * @author Francesco Magnani <francesco.magnani14@studio.unibo.it>
+ * @param req {Request} - Express request
+ * @param res {Response} - Express response
+ * @param next {Function} - Express Middleware handler
  */
 exports.tokenValidator = (req, res, next) => {
   const token = getToken(req)
@@ -31,9 +36,12 @@ exports.tokenValidator = (req, res, next) => {
 
 
 /**
- * TODO
- * @param req
- * @returns {*|null|string}
+ * Utility function to parse express requests and obtain the access token contained inside the authorization header of
+ * the request.
+ * @author thebigredgeek
+ * @param req {Request} - Express request. Must contain the accessToken inside one of the following: <code>req.headers.authorization</code>,
+ * <code>req.query.accessToken</code> or <code>req.cookies.accessToken</code>
+ * @returns {null|string} - A string with the access token, or null if the request doesn't contain it
  */
 const getToken = (req) => {
   if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') { // Authorization: Bearer ...
