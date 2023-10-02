@@ -22,7 +22,7 @@ afterAll(async () => {
 
 describe("POST /api/register", () => {
     it("Test User Registration", async () => {
-        await request(app).post("/auth/register").send({username: "user@test.it", password: "password", first_name:"Mario", last_name:"Rossi"}).then((res) => {
+        await request(app).post("/api/auth/register").send({username: "user@test.it", password: "password", first_name:"Mario", last_name:"Rossi"}).then((res) => {
             expect(res.statusCode).toBe(200);
             USER_ID = res.body.user.id;
             expect(res.body.user.username).toBe("user@test.it");
@@ -32,7 +32,7 @@ describe("POST /api/register", () => {
 
 describe("POST /api/login", () => {
     it("Test User Login", async () => {
-        await request(app).post("/auth/login").send({username: "user@test.it", password: "password"}).then((res) => {
+        await request(app).post("/api/auth/login").send({username: "user@test.it", password: "password"}).then((res) => {
             expect(res.statusCode).toBe(200);
             expect(res.body.username).toBe("user@test.it");
             ACCESS_TOKEN = res.body.accessToken;
