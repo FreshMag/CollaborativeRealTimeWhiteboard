@@ -75,12 +75,12 @@ rt.listen();
 exports.realtime = rt;
 
 
-
-server.listen(PORT, async () => {
-    printServerStart(PORT);
-    if (process.env.MODE === "test") {
-        await createTestEnvironment();
-    }
-});
-
+if (process.env.NODE_ENV !== 'test') {
+    server.listen(PORT, async () => {
+        printServerStart(PORT);
+        if (process.env.MODE === "test") {
+            await createTestEnvironment();
+        }
+    });
+}
 module.exports = server
