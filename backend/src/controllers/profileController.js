@@ -59,7 +59,7 @@ exports.updateWhiteboard = (req, res) => {
         fail(res)
     } else if (!req.body.whiteboardId) {
         failMissingElement(res)
-    } else if (!res.body.newName) {
+    } else if (!req.body.newName) {
         failMissingElement(res, "whiteboard","new name")
     } else {
         const {accessToken} = res.locals;

@@ -29,16 +29,37 @@ afterAll(async () => {
     await Whiteboard.findByIdAndDelete(whiteboard._id)
   }
   await mongoose.connection.close()
-
-
 });
+
+async function profileHasOneWhiteboardWith(name) {
+  const newProfileResponse = await request(app).get("/api/profile/")
+      .send()
+      .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+  expect(newProfileResponse.statusCode).toBe(200);
+  expect(newProfileResponse.body.whiteboards.length).toBe(1)
+  const whiteboard = newProfileResponse.body.whiteboards[0];
+  expect(whiteboard).toHaveProperty("_id")
+  expect(whiteboard).toHaveProperty("ownerId")
+  expect(whiteboard).toHaveProperty("users")
+  expect(whiteboard.users.length).toBe(1)
+  expect(whiteboard.users[0]).toBe(USER_ID)
+  expect(whiteboard).toHaveProperty("name")
+  expect(whiteboard.name).toBe(name)
+}
+
+async function profileHasZeroWhiteboards() {
+  const newProfileResponse = await request(app).get("/api/profile/")
+      .send()
+      .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+  expect(newProfileResponse.statusCode).toBe(200);
+  expect(newProfileResponse.body.whiteboards.length).toBe(0)
+}
+
+
+
 describe("GET /api/profile/", () => {
   it("Test User Get Profile and Whiteboard creation", async () => {
-    const res = await request(app).get("/api/profile/")
-        .send()
-        .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
-    expect(res.statusCode).toBe(200);
-    expect(res.body.whiteboards.length).toBe(0)
+    await profileHasZeroWhiteboards()
     const createResponse = await request(app).post("/api/profile/createWhiteboard")
         .send({whiteboardName: "Test"})
         .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
@@ -48,19 +69,7 @@ describe("GET /api/profile/", () => {
 
     CREATED_WHITEBOARDS.push(createResponse.body.whiteboardId)
 
-    const newProfileResponse = await request(app).get("/api/profile/")
-        .send()
-        .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
-    expect(newProfileResponse.statusCode).toBe(200);
-    expect(newProfileResponse.body.whiteboards.length).toBe(1)
-    const whiteboard = newProfileResponse.body.whiteboards[0];
-    expect(whiteboard).toHaveProperty("_id")
-    expect(whiteboard).toHaveProperty("ownerId")
-    expect(whiteboard).toHaveProperty("users")
-    expect(whiteboard.users.length).toBe(1)
-    expect(whiteboard.users[0]).toBe(USER_ID)
-    expect(whiteboard).toHaveProperty("name")
-    expect(whiteboard.name).toBe("Test")
+    await profileHasOneWhiteboardWith("Test")
   });
 });
 
@@ -78,19 +87,29 @@ describe("GET /api/profile/updateWhiteboard", () => {
     expect(updateResponse.statusCode).toBe(200);
     expect(updateResponse.body).toHaveProperty("message")
 
-    const newProfileResponse = await request(app).get("/api/profile/")
-        .send()
-        .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
-    expect(newProfileResponse.statusCode).toBe(200);
-    expect(newProfileResponse.body.whiteboards.length).toBe(1)
-    const whiteboard = newProfileResponse.body.whiteboards[0];
-    expect(whiteboard).toHaveProperty("_id")
-    expect(whiteboard).toHaveProperty("ownerId")
-    expect(whiteboard).toHaveProperty("users")
-    expect(whiteboard.users.length).toBe(1)
-    expect(whiteboard.users[0]).toBe(USER_ID)
-    expect(whiteboard).toHaveProperty("name")
-    expect(whiteboard.name).toBe("New Test")
+    await profileHasOneWhiteboardWith("New Test")
   });
 });
+
+describe("GET /api/profile/deleteWhiteboard", () => {
+  it("Test Delete of whiteboard", async () => {
+    const res = await request(app).get("/api/profile/")
+        .send()
+        .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+    expect(res.statusCode).toBe(200);
+    expect(res.body.whiteboards.length).toBe(1)
+    const id = res.body.whiteboards[0]._id
+    const deleteResponse = await request(app).delete("/api/profile/deleteWhiteboard")
+        .send({whiteboardId: id})
+        .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+    expect(deleteResponse.statusCode).toBe(200);
+    expect(deleteResponse.body).toHaveProperty("message")
+
+    if (CREATED_WHITEBOARDS.length === 1) {
+      CREATED_WHITEBOARDS[0] = undefined;
+    }
+    await profileHasZeroWhiteboards()
+  });
+});
+
 
