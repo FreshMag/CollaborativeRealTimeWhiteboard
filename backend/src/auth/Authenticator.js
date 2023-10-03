@@ -3,13 +3,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 
 /**
- * TODO
- * @type {exports.Authenticator}
+ * A class encapsulating all functionalities regarding the authentication process. It MUST be instantiated only once.
+ * @author Francesco Magnani <francesco.magnani14@studio.unibo.it>
+ * @type {exports.Authenticator} Authenticator
  */
 exports.Authenticator = class Authenticator {
     /**
-     * TODO
-     * @param model
+     * Default constructor for the class. It sets the keys used for the tokens and their expiration.
+     * @param model {RealDb} - Model instance, handling interactions with external databases
      */
     constructor(model) {
         this.model = model;
@@ -20,9 +21,13 @@ exports.Authenticator = class Authenticator {
     }
 
     /**
-     * TODO
-     * @param userData
-     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     * Method that registers the user into the system. It checks if another user with the same username exists. If so,
+     * returns a non-empty <code>err</code>. Otherwise, it hashes the password and stores the new user in the model.
+     * @author Francesco Magnani <francesco.magnani14@studio.unibo.it>
+     * @param userData {{first_name: String, last_name: String, username: String, password: String}} - User data, all
+     * information must be provided or the method will return an error
+     * @returns {Promise<{err: string, user: Object}>} - The new user just created if the process was successful, an
+     * error message otherwise
      */
     async register(userData) {
         // Our register logic starts here
@@ -31,7 +36,7 @@ exports.Authenticator = class Authenticator {
             const { first_name, last_name, username, password } = userData;
             // Validate user input
             if (!(username && password && first_name && last_name)) {
-                return {user: "",err:"All input is required"};
+                return {user: "", err:"All input is required"};
             }
 
             // check if user already exist
@@ -39,7 +44,7 @@ exports.Authenticator = class Authenticator {
             const oldUser = await this.model.findOneUser(username.toLowerCase());
 
             if (oldUser) {
-                return{user: "",err:"User Already Exist. Please Login"};
+                return {user: "",err:"User Already Exist. Please Login"};
             }
 
             //Encrypt user password
@@ -54,16 +59,18 @@ exports.Authenticator = class Authenticator {
             });
 
             // return new user
-            return {user: user}
+            return {user: user, err: ""}
         } catch (err) {
-            return {undefined,err}
+            return {user:"",err}
         }
     }
 
     /**
-     * TODO
-     * @param userData
-     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     * Method used to log in a user into the system.
+     * @param userData {{username: string, password: string}} - User data, all
+     * information must be provided or the method will return an error
+     * @returns {Promise<{err: string, user: Object}>} - The user just logged in, containing the username and other JWT
+     * data or an <code>err</code> if the login process was not successful
      */
     async login(userData) {
 
@@ -100,9 +107,11 @@ exports.Authenticator = class Authenticator {
 
 
     /**
-     *
-     * @param token
-     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     * Method used to validate a refresh token and generate a new access token
+     * @param token {string} - The refresh token to be validated
+     * @returns {Promise<{err: string, user: undefined, token: undefined}|{err: undefined, user: Object, token: Object}>} -
+     * The decoded user containing the username and the new generated access token, or an error if the process was not
+     * successful
      */
     async validateRefreshToken(token) {
         if (!token) {
@@ -123,9 +132,10 @@ exports.Authenticator = class Authenticator {
     }
 
     /**
-     * TODO
-     * @param token
-     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     * A utility method that first validates the refresh token and then returns a new access token.
+     * @param token {String} - The refresh token
+     * @returns {Promise<{err: string, token: undefined}|{err: undefined, token: (*)}>} - The newly generated access token
+     * or an error if the process was not successful
      */
     async refreshToken(token) {
         return this.validateRefreshToken(token).then(result => {
@@ -145,9 +155,10 @@ exports.Authenticator = class Authenticator {
     }
 
     /**
-     * TODO
-     * @param token
-     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>}
+     * Method used to validate an access token, mainly for authorization purposes.
+     * @param token {String} - The access token to be validated
+     * @returns {Promise<{err: string, user: undefined}|{err: undefined, user: (*)}>} - The decoded user containing the
+     * username, or an <code>err</code> if the validation was not successful.
      */
     async validateAccessToken(token) {
         if (!token) {

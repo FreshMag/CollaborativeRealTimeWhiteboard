@@ -50,7 +50,8 @@ exports.createWhiteboard = (req, res) => {
  * Controller handling whiteboard update, responds with status 400 if missing the whiteboard id the body. Like all the
  * protected routes, assumes that access token has been already validated by some other middleware
  * @author Francesco Magnani <francesco.magnani14@studio.unibo.it>
- * @param req {Request} - Express request, body MUST contain the id of the whiteboard <code>whiteboardId</code>
+ * @param req {Request} - Express request, body MUST contain the id of the whiteboard <code>whiteboardId</code> and its
+ * <code>newName</code>
  * @param res {Response} - Express response, responds with <code>message</code>
  */
 exports.updateWhiteboard = (req, res) => {
@@ -58,6 +59,8 @@ exports.updateWhiteboard = (req, res) => {
         fail(res)
     } else if (!req.body.whiteboardId) {
         failMissingElement(res)
+    } else if (!res.body.newName) {
+        failMissingElement(res, "whiteboard","new name")
     } else {
         const {accessToken} = res.locals;
         tryAuthorizeToWhiteboard(res, req.body.whiteboardId, accessToken, authZ.ownerToWhiteboard, authZ, () => {
