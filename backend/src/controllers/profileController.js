@@ -82,6 +82,7 @@ exports.deleteWhiteboard = (req, res) => {
     if (!res.locals.accessToken) {
         fail(res)
     } else if (!req.body.whiteboardId) {
+        console.log("CIAOOOOOOO")
         failMissingElement(res)
     } else {
         const {accessToken} = res.locals;

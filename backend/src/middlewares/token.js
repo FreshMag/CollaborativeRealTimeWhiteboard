@@ -15,8 +15,6 @@ const {Request, Response} = require("express");
  */
 exports.tokenValidator = (req, res, next) => {
   const token = getToken(req)
-  log("Checking token: " + token?.substring(0, 10) + "...")
-  log("Route : " + req.originalUrl)
   if (token) {
     auth.validateAccessToken(token).then(result => {
       if (result.err) {
