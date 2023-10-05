@@ -13,7 +13,7 @@ let mongod;
 beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
     process.env.DB_ADDRESS = mongod.getUri();
-    mongoose.connect(process.env.DB_ADDRESS, {
+    await mongoose.connect(process.env.DB_ADDRESS, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });

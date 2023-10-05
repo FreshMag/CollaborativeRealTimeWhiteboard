@@ -6,4 +6,5 @@ RUN npm install
 COPY . .
 ENV DB_IP=db
 ENV FRONTEND_IP=localhost
+ENV NODE_ENV=dev
 CMD npm run dev

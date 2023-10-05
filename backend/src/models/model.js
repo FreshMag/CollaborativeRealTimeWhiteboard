@@ -9,11 +9,11 @@ const bcrypt = require("bcrypt");
  */
 class RealDb {
     constructor() {
-        this.dbAddress = process.env.DB_ADDRESS;
-        console.log(this.dbAddress)
-        mongoose.connect(this.dbAddress)
-            .then(() => {logSuccess(`Successfully connected to ${this.dbAddress}`)})
-            .catch((e)=>{console.error(e)});
+        if(process.env.NODE_ENV !== 'test'){
+            mongoose.connect(process.env.DB_ADDRESS)
+                .then(() => {logSuccess(`Successfully connected to ${process.env.DB_ADDRESS}`)})
+                .catch((e)=>{console.error(e)});
+        }
     }
 
     async findOneUser(username) {
