@@ -1,22 +1,33 @@
-// Test: auth.test.js
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const {userSchema, whiteboardSchema, notificationSchema} = require("../src/models/dbModel");
+const mongoose = require('mongoose');
 const request = require("supertest");
-const {User} = require("../src/models/dbModel");
 const app = require("../server");
-const mongoose = require("mongoose");
 require("dotenv").config();
 
 let USER_ID = "";
 let ACCESS_TOKEN = "";
 
+
+let mongod;
 beforeAll(async () => {
-    await mongoose.connect(process.env.DB_ADDRESS);
+    mongod = await MongoMemoryServer.create();
+    process.env.DB_ADDRESS = mongod.getUri();
+    mongoose.connect(process.env.DB_ADDRESS, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 });
+
+const User = mongoose.model('User', userSchema);
+const Whiteboard = mongoose.model('Whiteboard', whiteboardSchema);
+const Notification = mongoose.model('Notification', notificationSchema);
 
 /* Closing database connection after each test. */
 afterAll(async () => {
     await User.findByIdAndDelete(USER_ID).then(async () => {
-        await mongoose.connection.close().then(() => {
-        });
+        await mongoose.disconnect();
+        await mongod.stop();
     });
 });
 

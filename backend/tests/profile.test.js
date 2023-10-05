@@ -1,15 +1,26 @@
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const {userSchema, whiteboardSchema, notificationSchema} = require("../src/models/dbModel");
+const mongoose = require('mongoose');
 const request = require("supertest");
-const mongoose = require("mongoose");
 const app = require("../server");
+require("dotenv").config();
 
-const {User, Whiteboard} = require("../src/models/dbModel");
+const User = mongoose.model('User', userSchema);
+const Whiteboard = mongoose.model('Whiteboard', whiteboardSchema);
+const Notification = mongoose.model('Notification', notificationSchema);
 
 let USER_ID = "";
 let ACCESS_TOKEN = "";
 let CREATED_WHITEBOARDS = []
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.DB_ADDRESS);
+  mongod = await MongoMemoryServer.create();
+  process.env.DB_ADDRESS = mongod.getUri();
+  await mongoose.connect(process.env.DB_ADDRESS, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
   await request(app).post("/api/auth/register").send({username: "user@test.it", password: "password", first_name:"Mario", last_name:"Rossi"}).then((res) => {
     expect(res.statusCode).toBe(200);
     USER_ID = res.body.user.id;
@@ -28,7 +39,8 @@ afterAll(async () => {
   for (let whiteboard in CREATED_WHITEBOARDS) {
     await Whiteboard.findByIdAndDelete(whiteboard._id)
   }
-  await mongoose.connection.close()
+  await mongoose.disconnect();
+  await mongod.stop();
 });
 
 async function profileHasOneWhiteboardWith(name) {
