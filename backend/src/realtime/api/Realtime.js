@@ -24,12 +24,7 @@ const LogType = {
 module.exports = class Realtime {
     constructor(server, controller) {
         // Create an io server and allow for CORS from http://localhost:3000 with GET and POST methods
-        this.io = new Server(server, {
-            cors: {
-                origin: [`http://${process.env.FRONTEND_IP}:3000`, `http://${process.env.FRONTEND_IP}:8080`],
-                methods: ['GET', 'POST'],
-            },
-        });
+        this.io = new Server(server);
         this.controller = controller;
         this.roomData = {users: {}, connections: {}, rooms: {}, usersInWhiteboard: {}};
         this.applicationData = {};
@@ -44,7 +39,6 @@ module.exports = class Realtime {
      * TODO
      */
     listen() {
-
         // Listen for when the client connects via socket.io-client
         this.io.on('connection', (socket) => {
             if (socket.handshake.query.accessToken) {
