@@ -5,9 +5,13 @@ const {checkContains} = require("../util/arrayUtil")
 const bcrypt = require("bcrypt");
 
 /**
- * TODO
+ * Class that handles all the interaction with the database. All the useful requests to the database are extracted as
+ * methods of this class.
  */
 class RealDb {
+    /**
+     * Primary constructor. It tries to connect to the database, and then prints the outcome in the console.
+     */
     constructor() {
         if(process.env.NODE_ENV !== 'test'){
             mongoose.connect(process.env.DB_ADDRESS)

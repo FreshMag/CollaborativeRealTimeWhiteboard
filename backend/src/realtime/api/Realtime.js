@@ -3,7 +3,7 @@ const {logYellow, log, logErr, logCyan, logConnected, logSuccess, logExited, log
 
 
 /**
- * TODO
+ * Useful object used to perform clear and fast logging actions, heavenly used inside this file.
  * @type {{JOIN_APP: (function(*): void), EXIT_APP: (function(*): void), ERR: (function(*): void), JOIN_WHITEBOARD: (function(*): void), CONNECTED: (function(*): void), DISCONNECT: (function(*): void), INVITE: (function(*): void), EXIT_WHITEBOARD: (function(*): void)}}
  */
 const LogType = {
@@ -18,10 +18,19 @@ const LogType = {
 }
 
 /**
- * TODO
+ * Complete class used to handle all real-time communications. Internally, it uses Socket.IO library, so under the hood
+ * it uses a system based on events and listeners. To start listening for communications, first the {@link listen} method
+ * must be called.
  * @type {Class}
  */
 module.exports = class Realtime {
+    /**
+     * Primary constructor. It wraps the externally provided server with a Socket.IO server, with the correct setup of
+     * CORS and data structures to keep runtime data about online users.
+     * @param server - Server wrapped with a Socket.IO server
+     * @param controller - Object used to delegate actions that are not strictly related to real-time, for example
+     * authorization processes.
+     */
     constructor(server, controller) {
         // Create an io server and allow for CORS from http://localhost:3000 with GET and POST methods
         this.io = new Server(server);
@@ -36,7 +45,8 @@ module.exports = class Realtime {
     }
 
     /**
-     * TODO
+     * Method used to start listening to Socket.IO events and therefore enabling real-time communications inside the
+     * server. This is the only method inside this class that is meant for public usage.
      */
     listen() {
         // Listen for when the client connects via socket.io-client
@@ -46,7 +56,6 @@ module.exports = class Realtime {
                 socket.on("joinApplication", (accessToken, callback) => {
                     this.controller.checkToken(accessToken, (err, result) => {
                         if(err){
-                            // todo manage unauthorized access
                             this.log("Error connecting: " + err, LogType.ERR)
                             callback({status: 'ko'});
                             socket.disconnect();
@@ -61,7 +70,6 @@ module.exports = class Realtime {
                 socket.on("disconnectApplication", (accessToken) => {
                     this.controller.checkToken(accessToken, (err, result) => {
                         if (err) {
-                            // todo manage unauthorized access
                             this.log("Error connecting: " + err, LogType.ERR)
                         } else {
                             delete this.applicationData[result.username];
@@ -84,11 +92,6 @@ module.exports = class Realtime {
         });
     }
 
-    /**
-     * TODO
-     * @param socket
-     * @param username
-     */
     joinApplication(socket, username) {
         this.applicationData[username] = socket;
         this.log(`${username} has connected to the application. Socket ID : ${socket.id}`, LogType.JOIN_APP);
@@ -96,11 +99,9 @@ module.exports = class Realtime {
         socket.on('inviteCollaborator', (accessToken, toInviteUsername) =>{
             this.controller.checkToken(accessToken, (err, result) =>{
                 if(err){
-                    // todo manage unauthorized access
                     this.log("Error connecting: " + err, LogType.ERR)
                     socket.disconnect();
                 } else{
-                    //todo add notification to db
                     this.log(`${username} has invited ${toInviteUsername} to the application. Socket ID : ${socket.id}`, LogType.INVITE);
                     this.applicationData[toInviteUsername]?.emit('receiveCollaborationInvite', (result.username));
                 }
@@ -113,7 +114,6 @@ module.exports = class Realtime {
             this.controller.joinWhiteboard(accessToken, room,
                 (err, username) => {
                     if (err) {
-                        // todo manage unauthorized access
                         this.log("Error connecting: " + err, LogType.ERR)
                         callback({status: "ko"})
                         socket.disconnect();
@@ -121,7 +121,6 @@ module.exports = class Realtime {
                         this.joinWhiteboard(socket, username, room);
                         callback({status:'ok'});
                     } else {
-                        // todo manage internal server error
                         this.log("Internal server error", LogType.ERR)
                     }
 
@@ -131,12 +130,6 @@ module.exports = class Realtime {
         });
     }
 
-    /**
-     * TODO
-     * @param socket
-     * @param username
-     * @param room
-     */
     joinWhiteboard(socket, username, room) {
 
         socket.join(room);
@@ -167,7 +160,6 @@ module.exports = class Realtime {
         socket.on('drawStart', (line, accessToken, callback) => {
             this.controller.lineStarted(line, accessToken, room, (err, newId) => {
                 if (err) {
-                    // todo handle unauthorized line
                 } else {
                     callback({newId: newId}); // to propagate back to the client the fresh new line id
                     //console.log(line);
@@ -191,7 +183,6 @@ module.exports = class Realtime {
                         }
                     })
                 } else {
-                    // todo handle error
                 }
             })
 
@@ -200,7 +191,6 @@ module.exports = class Realtime {
         socket.on('drawEnd', (line, lineId, accessToken) => {
             this.controller.lineEnd(line, accessToken, lineId, room, (err) => {
                 if (err) {
-                    // todo handle unauthorized line
                 } else {
                     this.roomData.rooms[room].forEach(connection => {
                         if(socket.id !== connection.id){
@@ -215,7 +205,6 @@ module.exports = class Realtime {
         socket.on('lineDelete', (lineId, accessToken) => {
             this.controller.lineDelete(lineId, accessToken, room, (err) => {
                 if (err) {
-                    // todo handle unauthorized line
                 } else {
                     this.roomData.rooms[room].forEach(connection => {
                         if(socket.id !== connection.id){
@@ -244,7 +233,6 @@ module.exports = class Realtime {
             socket.removeAllListeners("lineDelete");
             socket.off("disconnect", leftListener);
             socket.off("disconnectApplication", leftListener);
-            //todo implementare l'aggiornamento di roomData
         };
 
 

@@ -8,9 +8,13 @@ exports.auth = auth;
 const SECURE_COOKIE = true; // if set to true, the cookie will be accessible only through https (not development mode)
 
 /**
- * TODO
- * @author TODO
- * @param req {Request} - Express request
+ * Controller handling refresh of the access Token. It uses a refresh token and the old access token to obtain a new
+ * valid access token. It responds with status 401 if the validation of the refresh token was unsuccessful or if there
+ * were missing parameters (refresh Token in the cookies or the access token in the body) or with a <code>message</code>
+ * and the <code>token</code> if the process was successful.
+ * @author Valerio Di Zio <valerio.dizio@studio.unibo.it>, Francesco Magnani <francesco.magnani14@studio.unibo.it>,
+ * Thomas Capelli <thomas.capelli@studio.unibo.it>
+ * @param req {Request} - Express request, must contain the access token in the body
  * @param res {Response} - Express response
  */
 exports.refresh = (req, res) => {
@@ -37,8 +41,10 @@ exports.refresh = (req, res) => {
 }
 
 /**
- * TODO
- * @author TODO
+ * Controller handling the logout process. It clears the refresh token in the cookies and responds with a <code>message</code>
+ * if the process was successful, with status 405 if the user didn't appear as logged in, status 500 otherwise.
+ * @author Valerio Di Zio <valerio.dizio@studio.unibo.it>, Francesco Magnani <francesco.magnani14@studio.unibo.it>,
+ * Thomas Capelli <thomas.capelli@studio.unibo.it>
  * @param req {Request} - Express request
  * @param res {Response} - Express response
  */
@@ -56,8 +62,11 @@ exports.logout = (req, res) => {
 }
 
 /**
- * TODO
- * @author TODO
+ * Controller handling the register process. The body of the request must contain <code>username, password, first_name
+ * </code>and <code>last_name</code>. It responds with status 400 and <code>message</code> if something went wrong
+ * (for example, already existing user) or if some parameter was missing in the body. If all was successful, it responds
+ * with a <code>message</code> and the <code>user</code> (without the password)
+ * @author Francesco Magnani <francesco.magnani14@studio.unibo.it>
  * @param req {Request} - Express request
  * @param res {Response} - Express response
  */
@@ -97,8 +106,11 @@ exports.register = (req, res) => {
 }
 
 /**
- * TODO
- * @author TODO
+ * Controller handling the login process. The body of the request must contain <code>username</code> and <code>password</code>
+ * of the user. It responds with status 400 if something went wrong or if some of the parameters were missing inside the
+ * body of the request. It the process was successful, it responds with <code>message</code>, <code>accessToken</code>,
+ * <code>name</code>, <code>userId</code> and <code>username</code> of the user and also setting a secure cookie named
+ * <code>refreshToken</code> containing the refresh token of the user.
  * @param req {Request} - Express request
  * @param res {Response} - Express response
  */
