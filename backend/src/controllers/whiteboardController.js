@@ -75,11 +75,12 @@ exports.inviteToWhiteboard = (req, res) => {
 */
 
 /**
- * TODO
- * @author
- * @param accessToken
- * @param whiteboardId
- * @param callback
+ * Controller used to handle join whiteboard events. Typically used while handling real-time communications. It uses
+ * the callback to handle the asynchronous behaviour.
+ * @param accessToken {string} - Access token provided by the user to be authorized to the joining process
+ * @param whiteboardId {string} - ID representing the whiteboard
+ * @param callback {Function} - Callback. Called with <code>undefined, username</code> if the process was successful, or with
+ * <code>err, undefined</code> otherwise
  */
 exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
     authZ.normalUserToWhiteboard(accessToken, whiteboardId).then(result => {
@@ -93,12 +94,13 @@ exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
 }
 
 /**
- * TODO
- * @author
- * @param line
- * @param accessToken
- * @param whiteboardId
- * @param callback
+ * Controller used to handle the user starting drawing a line inside the whiteboard. Typically used while handling
+ * real-time communications. It uses the callback to handle the asynchronous behaviour.
+ * @param line {Object} - The line being generated (optional)
+ * @param accessToken {string} - Access token provided by the user to be authorized to the line starting process
+ * @param whiteboardId {string} - ID representing the whiteboard
+ * @param callback {Function} - Callback. Called with <code>undefined, id</code>, where the id represents the new line
+ * just created, if the process was successful, or with <code>err, undefined</code> otherwise
  */
 exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
     authZ.authorizeNewLine(accessToken, whiteboardId).then(result => {
@@ -113,26 +115,19 @@ exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
     })
 }
 
-/**
- * TODO
- * @author
- * @param line
- * @param lineId
- * @param whiteboardId
- * @param callback
- */
 exports.lineMove = (line, lineId, whiteboardId, callback) => {
     const {point, color} = line;
     callback();
 }
 /**
- * TODO
- * @author
- * @param line
- * @param accessToken
- * @param lineId
- * @param whiteboardId
- * @param callback
+ * Controller used to handle the user ending a line (releasing the click or the touch) inside the whiteboard.
+ * Typically used while handling real-time communications. It uses the callback to handle the asynchronous behaviour.
+ * @param line {{points: Array, color: String, stroke: Number}} - The line, complete of all the points drawn.
+ * @param accessToken {string} - Access token provided by the user to be authorized to the line ending process
+ * @param lineId {string} - ID representing the line that is being ended
+ * @param whiteboardId {string} - ID representing the whiteboard
+ * @param callback {Function} - Callback. Called with <code>undefined</code> if the process was successful, or with
+ * <code>err</code> otherwise
  */
 exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
     authZ.authorizeLineEnd(accessToken, lineId, whiteboardId).then(result => {
@@ -152,12 +147,13 @@ exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
 }
 
 /**
- * TODO
- * @author
- * @param lineId
- * @param accessToken
- * @param whiteboardId
- * @param callback
+ * Controller used to handle the user deleting a line inside the whiteboard.
+ * Typically used while handling real-time communications. It uses the callback to handle the asynchronous behaviour.
+ * @param lineId {String} - The ID representing the line to be deleted
+ * @param accessToken {string} - Access token provided by the user to be authorized to the line deleting process
+ * @param whiteboardId {string} - ID representing the whiteboard
+ * @param callback {Function} - Callback. Called with <code>undefined</code> if the process was successful, or with
+ * <code>err</code> otherwise
  */
 exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
     authZ.authorizeLineDelete(accessToken, lineId, whiteboardId).then(result => {
@@ -176,10 +172,11 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
 }
 
 /**
- * TODO
- * @author
- * @param accessToken
- * @param callback
+ * This function is used to quickly check the user's access token when entering the application by using real time
+ * communications.
+ * @param accessToken {String} - Access token provided by the user to be authorized
+ * @param callback {Function} - Callback. Called with <code>undefined, user</code> if the process was successful, or with
+ * <code>err</code> otherwise
  */
 exports.checkToken = (accessToken, callback) =>{
     auth.validateAccessToken(accessToken).then(result => {

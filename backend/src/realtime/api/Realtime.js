@@ -90,11 +90,6 @@ module.exports = class Realtime {
         });
     }
 
-    /**
-     * TODO
-     * @param socket
-     * @param username
-     */
     joinApplication(socket, username) {
         this.applicationData[username] = socket;
         this.log(`${username} has connected to the application. Socket ID : ${socket.id}`, LogType.JOIN_APP);
@@ -137,12 +132,6 @@ module.exports = class Realtime {
         });
     }
 
-    /**
-     * TODO
-     * @param socket
-     * @param username
-     * @param room
-     */
     joinWhiteboard(socket, username, room) {
 
         socket.join(room);

@@ -34,7 +34,8 @@ router.route("/unreadNotifications")
 
 
 /**
- *
+ * Handles the routes of /, /createWhiteboard, /updateWhiteboard, /deleteWhiteboard, /users, /notifications, /addNotification,
+ * /deleteNotifications, /updateNotification, /unreadNotifications
  * @type {Router}
  */
 module.exports = router;

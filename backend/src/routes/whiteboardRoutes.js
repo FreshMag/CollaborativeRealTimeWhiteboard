@@ -9,7 +9,7 @@ router.route("/:id")
     .get(whiteboardController.getWhiteboardData)
 
 /**
- * TODO
+ * Handles the routes of /invite and /:id
  * @type {Router}
  */
 module.exports = router;

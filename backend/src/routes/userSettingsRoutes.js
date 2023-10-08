@@ -11,7 +11,7 @@ router.route('/updatePassword')
 
 
 /**
- * TODO
+ * Handles the routes of /, /updateInfo and /updatePassword
  * @type {Router}
  */
 module.exports = router;
