@@ -67,7 +67,7 @@ class Db {
             const toCreate = {
                 id: this.whiteboardFreeId,
                 name: name,
-                ownerId: userId, // todo check for valid user id
+                ownerId: userId,
                 traits: {},
                 freeId: 0,
                 users: [userId]
