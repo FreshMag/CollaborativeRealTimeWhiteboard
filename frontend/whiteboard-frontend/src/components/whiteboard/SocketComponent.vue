@@ -19,16 +19,16 @@ export default {
     }
   },
   created() {
-    /* todo first, connect to express API to get whiteboard data (and put them in the canvas,
-        then try to connect with socket io
-    */
-
     this.connected = true;
   },
   unmounted() {
     this.connected = false;
   },
   methods: {
+    /**
+     * Uses socket object to know if it has connected to the server. If it has, it performs the setup of all listeners.
+     * If not, it waits
+     */
     connect() {
       if (socket.connected) {
         this.joinWhiteboardSetup();
