@@ -27,7 +27,7 @@ export default {
   methods: {
     /**
      * Uses socket object to know if it has connected to the server. If it has, it performs the setup of all listeners.
-     * If not, it waits
+     * If not, it waits for the Socket.IO to be connected to the application, and only then it performs the setup.
      */
     connect() {
       if (socket.connected) {
