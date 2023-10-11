@@ -1,3 +1,8 @@
+/**
+ * Simple utility function that computes the Secure Hash Function of length 256 bytes.
+ * @param message {String} - String to be hashed
+ * @returns {Promise<string>} - Hashed string
+ */
 exports.sha256 = async function sha256(message) {
     // encode as UTF-8
     const msgBuffer = new TextEncoder().encode(message);
