@@ -17,7 +17,9 @@ let ACCESS_TOKEN = "";
 let WHITEBOARD_ID = 0;
 let mongod;
 let clientSocket;
+let clientSocket2;
 
+let socketConnectionPromise;
 beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
     process.env.DB_ADDRESS = mongod.getUri();
@@ -62,12 +64,31 @@ beforeAll(async () => {
     rt.listen();
 
     await new Promise((resolve) => {
-        server.listen(4000, () => {
-            clientSocket = io.connect('http://localhost:4000', {query: {
-                    "accessToken": ACCESS_TOKEN
-                }});
-            clientSocket.on("connect", () => {
+        let connectedSockets = 0; // Variabile di stato per tener traccia dei socket connessi
+
+        // Funzione per chiamare resolve solo quando entrambi i socket sono connessi
+        function checkAndResolve() {
+            connectedSockets++;
+            if (connectedSockets === 2) {
                 resolve();
+            }
+        }
+
+        server.listen(4000, () => {
+            clientSocket2 = io.connect('http://localhost:4000', {
+                query: { "accessToken": ACCESS_TOKEN }
+            });
+            // Gestisci il primo socket
+            clientSocket2.on("connect", () => {
+                checkAndResolve();
+            });
+
+            clientSocket = io.connect('http://localhost:4000', {
+                query: { "accessToken": ACCESS_TOKEN }
+            });
+            // Gestisci il secondo socket
+            clientSocket.on("connect", () => {
+                checkAndResolve();
             });
         });
     });
@@ -81,8 +102,19 @@ afterAll(async () => {
     clientSocket.disconnect();
 });
 
-test("Test Whiteboard Connection", () => {
-    clientSocket.emit("joinWhiteboard", ACCESS_TOKEN, WHITEBOARD_ID, (response) => {
-        expect(response.status).toBe('ok')
+describe("Test Realtime Drawing", () => {
+    it("Test Whiteboard Connection", async () => {
+        clientSocket.emit("joinWhiteboard", ACCESS_TOKEN, WHITEBOARD_ID, (response) => {
+            expect(response.status).toBe('ok')
+        });
+    });
+
+    it("Test Whiteboard Draw", async () => {
+        let lineToSend = {id: 0, point: {x: 1, y: 1}, color: "Red", stroke: 1}
+        clientSocket.emit("drawStart", lineToSend, ACCESS_TOKEN, (response) => {
+            clientSocket2.on("drawStartBC", (line, newId) => {
+                expect(line).toBe(lineToSend);
+            });
+        });
     });
 });
