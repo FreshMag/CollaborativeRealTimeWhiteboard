@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 /**
  * A class encapsulating all functionalities regarding the authentication process. It MUST be instantiated only once.
  * @author Francesco Magnani <francesco.magnani14@studio.unibo.it>
- * @type {exports.Authenticator} Authenticator
+ * @type {exports.Authenticator}
  */
 exports.Authenticator = class Authenticator {
     /**

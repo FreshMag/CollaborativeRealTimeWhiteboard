@@ -6,7 +6,7 @@ const NORMAL = 1;
 /**
  * A class that encapsulates all the functionalities related to granting authorization.
  * @author Francesco Magnani <francesco.magnani14@studio.unibo.it>
- * @type {Authorizer} - Authorizer
+ * @type {Authorizer}
  */
 module.exports = class Authorizer {
     /**
