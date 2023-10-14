@@ -78,7 +78,6 @@ beforeAll(async () => {
             clientSocket2 = io.connect('http://localhost:4000', {
                 query: { "accessToken": ACCESS_TOKEN }
             });
-            // Gestisci il primo socket
             clientSocket2.on("connect", () => {
                 checkAndResolve();
             });
@@ -86,7 +85,6 @@ beforeAll(async () => {
             clientSocket = io.connect('http://localhost:4000', {
                 query: { "accessToken": ACCESS_TOKEN }
             });
-            // Gestisci il secondo socket
             clientSocket.on("connect", () => {
                 checkAndResolve();
             });
@@ -109,12 +107,39 @@ describe("Test Realtime Drawing", () => {
         });
     });
 
-    it("Test Whiteboard Draw", async () => {
-        let lineToSend = {id: 0, point: {x: 1, y: 1}, color: "Red", stroke: 1}
+    it("Test Whiteboard Draw Start", async () => {
+        let lineToSend = {id: 1, point: [{x: 1, y: 1}], color: "Red", stroke: 1}
         clientSocket.emit("drawStart", lineToSend, ACCESS_TOKEN, (response) => {
-            clientSocket2.on("drawStartBC", (line, newId) => {
+            clientSocket2.on("drawStartBC", (line, _) => {
                 expect(line).toBe(lineToSend);
             });
         });
     });
+
+    it("Test Whiteboard Drawing", async () => {
+        let lineToSend = {id: 1, point: [{x: 2, y: 2}], color: "Red", stroke: 2}
+        clientSocket.emit("drawing", lineToSend, ACCESS_TOKEN,(response) => {
+            clientSocket2.on("drawingBC", (line, lineId) => {
+                expect(line).toBe(lineToSend);
+                expect(lineId).toBe(2);
+            });
+        });
+    });
+
+    it("Test Whiteboard Draw End", async () => {
+        let lineIdToSend = 2;
+        let lineToSend = {id: 1, point: [{x: 3, y: 2}], color: "Red", stroke: 2}
+        clientSocket.emit("drawEnd", lineToSend, lineIdToSend, ACCESS_TOKEN,(response) => {
+            clientSocket2.on("drawEndBC", (line, lineId) => {
+                expect(line).toBe(lineToSend);
+                expect(lineId).toBe(2);
+            });
+        });
+
+        const whiteboard = await request(app).get("/api/whiteboard/"+WHITEBOARD_ID)
+            .send().set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+        expect(whiteboard.body.whiteboardData._id).toBe(WHITEBOARD_ID);
+        console.error(whiteboard.body) //check why no trait
+    });
+
 });
