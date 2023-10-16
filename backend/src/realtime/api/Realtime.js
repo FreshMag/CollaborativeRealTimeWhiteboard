@@ -191,6 +191,7 @@ module.exports = class Realtime {
         socket.on('drawEnd', (line, lineId, accessToken) => {
             this.controller.lineEnd(line, accessToken, lineId, room, (err) => {
                 if (err) {
+                    logErr(err);
                 } else {
                     this.roomData.rooms[room].forEach(connection => {
                         if(socket.id !== connection.id){
