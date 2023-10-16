@@ -44,6 +44,37 @@ describe('GET /api/userSetting', () => {
             .send()
             .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
         expect(res.statusCode).toBe(200);
-        expect(res.body.user.first_name).toBe("Mario")
+        expect(res.body.user.username).toBe("user@test.it");
+        expect(res.body.user.first_name).toBe("Mario");
+        expect(res.body.user.last_name).toBe("Rossi")
+    })
+})
+
+describe('PUT /api/userSetting/updateInfo', () => {
+    it("Test user data retrieval", async () => {
+        const res = await request(app).get("/api/userSetting/")
+            .send({
+                first_name: "Thomas",
+                last_name: "Capelli",
+                username: "user@test.it"
+            })
+            .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+        expect(res.statusCode).toBe(200);
+        expect(res.body.user.username).toBe("user@test.it");
+        expect(res.body.user.first_name).toBe("Thomas");
+        expect(res.body.user.last_name).toBe("Capelli")
+    })
+})
+
+describe('PUT /api/userSetting/updatePassword', () => {
+    it("Test user data retrieval", async () => {
+        const res = await request(app).get("/api/userSetting/")
+            .send({
+                username: "user@test.it",
+                password: "Distribuiti"
+            })
+            .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("User data updated successfully");
     })
 })
