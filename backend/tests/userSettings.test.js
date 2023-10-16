@@ -5,6 +5,8 @@ const request = require("supertest");
 const app = require("../server");
 require("dotenv").config();
 
+const User = mongoose.model('User', userSchema);
+
 let USER_ID = "";
 let ACCESS_TOKEN = "";
 
@@ -28,14 +30,13 @@ beforeAll(async () => {
     });
 });
 
-const User = mongoose.model('User', userSchema);
+
 
 /* Closing database connection after each test. */
 afterAll(async () => {
-    await User.findByIdAndDelete(USER_ID).then(async () => {
-        await mongoose.disconnect();
-        await mongod.stop();
-    });
+    await User.findByIdAndDelete(USER_ID);
+    await mongoose.disconnect()
+    await mongod.stop();
 });
 
 describe('GET /api/userSetting', () => {
@@ -44,37 +45,46 @@ describe('GET /api/userSetting', () => {
             .send()
             .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
         expect(res.statusCode).toBe(200);
-        expect(res.body.user.username).toBe("user@test.it");
-        expect(res.body.user.first_name).toBe("Mario");
-        expect(res.body.user.last_name).toBe("Rossi")
+        const user = res.body;
+        expect(user.username).toBe("user@test.it");
+        expect(user.first_name).toBe("Mario");
+        expect(user.last_name).toBe("Rossi")
     })
 })
 
 describe('PUT /api/userSetting/updateInfo', () => {
     it("Test user data retrieval", async () => {
-        const res = await request(app).get("/api/userSetting/")
+        await request(app).put("/api/userSetting/updateInfo")
             .send({
                 first_name: "Thomas",
                 last_name: "Capelli",
                 username: "user@test.it"
             })
             .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+        const res = await request(app).get("/api/userSetting/")
+            .send()
+            .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+        const user = res.body;
         expect(res.statusCode).toBe(200);
-        expect(res.body.user.username).toBe("user@test.it");
-        expect(res.body.user.first_name).toBe("Thomas");
-        expect(res.body.user.last_name).toBe("Capelli")
+        expect(user.username).toBe("user@test.it");
+        expect(user.first_name).toBe("Thomas");
+        expect(user.last_name).toBe("Capelli")
     })
 })
 
 describe('PUT /api/userSetting/updatePassword', () => {
     it("Test user data retrieval", async () => {
-        const res = await request(app).get("/api/userSetting/")
+        const passRes = await request(app).put("/api/userSetting/updatePassword")
             .send({
-                username: "user@test.it",
-                password: "Distribuiti"
+                password: "newPassword"
             })
             .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toBe("User data updated successfully");
+        expect(passRes.statusCode).toBe(200)
+        expect(passRes.body.message).toBe("User data updated successfully");
+        const getRes = await request(app).get("/api/userSetting/")
+            .send()
+            .set({ Authorization: `Bearer ${ACCESS_TOKEN}` })
+        expect(getRes.statusCode).toBe(200);
+
     })
 })
