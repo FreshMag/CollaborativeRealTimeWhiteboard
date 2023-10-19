@@ -4,7 +4,7 @@
             <div class="col-8">
                 <h1 class="h3 mb-5">Sing Up</h1>
                 <div v-if="showAlert" class="alert alert-danger" role="alert">
-                    {{alertMessage}}
+                    {{ alertMessage }}
                 </div>
                 <div v-if="isFormSubmitted" class="alert alert-success" role="alert">
                     <p>Registered successfully</p>
@@ -16,27 +16,30 @@
 
                     <!-- Name input -->
                     <div class="form-floating  mb-4">
-                        <input type="text" id="name" class="form-control" aria-required="true" v-model="name" placeholder="Name" required/>
+                        <input type="text" id="name" class="form-control" aria-required="true" v-model="name"
+                            placeholder="Name" required />
                         <label class="form-label" for="name">Name</label>
                     </div>
 
                     <!-- Surname input -->
                     <div class="form-floating  mb-4">
-                        <input type="text" id="lastName" class="form-control" aria-required="true" v-model="lastName" placeholder="Surname" required/>
+                        <input type="text" id="lastName" class="form-control" aria-required="true" v-model="lastName"
+                            placeholder="Surname" required />
                         <label class="form-label" for="lastName">Surname</label>
                     </div>
 
-                    <PasswordFormComponent @password-changed="passwordHandler" @input="this.checkPasswords"></PasswordFormComponent>
+                    <PasswordFormComponent @password-changed="passwordHandler" @input="this.checkPasswords">
+                    </PasswordFormComponent>
 
                     <!-- Confirm input -->
                     <div class="form-floating  mb-4">
-                        <input type="password" id="confirmPassword" class="form-control" @input="this.checkPasswords" aria-required="true"
-                            v-model="confirmPassword" placeholder="Confirm Password" required />
+                        <input type="password" id="confirmPassword" class="form-control" @input="this.checkPasswords"
+                            aria-required="true" v-model="confirmPassword" placeholder="Confirm Password" required />
                         <label class="form-label" for="confirmPassword">Confirm Password</label>
                     </div>
 
                     <!-- Submit button -->
-                    <button class="btn btn-primary btn-block mb-4" :disabled="passwordCheckError" >Register</button>
+                    <button class="btn btn-primary btn-block mb-4" :disabled="passwordCheckError">Register</button>
 
                     <!-- Login buttons -->
                     <div class="text-center">
@@ -57,15 +60,15 @@ export default {
     name: 'RegisterView',
     data() {
         return {
-            username:"",
-            name:"",
-            lastName:"",
-            password:"",
-            confirmPassword:"",
+            username: "",
+            name: "",
+            lastName: "",
+            password: "",
+            confirmPassword: "",
             showAlert: false,
-            passwordCheckError:false,
+            passwordCheckError: false,
             alertMessage: "",
-            isFormSubmitted:false,
+            isFormSubmitted: false,
         }
     },
     components: {
@@ -87,10 +90,10 @@ export default {
         submitForm: function () {
             const ref = this;
             const req = axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/register`, {
-                username:this.username,
-                password:this.password,
-                first_name:this.name,
-                last_name:this.lastName
+                username: this.username,
+                password: this.password,
+                first_name: this.name,
+                last_name: this.lastName
             }).then(() => {
             }).catch(function (error) {
                 ref.showAlert = true;
@@ -99,16 +102,18 @@ export default {
             req.then(() => {
                 axios.post(`http://${process.env.VUE_APP_BACKEND_IP}/api/auth/login`,
                     {
-                    username: this.username,
-                    password: this.password,
-                }, {withCredentials: true}).then(response => {
-                    localStorage.setItem('accessToken', response.data.accessToken);
-                    localStorage.setItem('name', response.data.name);
-                    this.$router.replace({ path: '/whiteboards' })
-                    this.$emit("onLogin")
-                }).catch(() => {
-                    this.isInvalid = true;
-                });
+                        username: this.username,
+                        password: this.password,
+                    }, { withCredentials: true }).then(response => {
+                        localStorage.setItem('accessToken', response.data.accessToken);
+                        localStorage.setItem('name', response.data.name);
+                        localStorage.setItem('userId', response.data.userId);
+                        localStorage.setItem('username', response.data.username);
+                        this.$router.replace({ path: '/whiteboards' })
+                        this.$emit("onLogin")
+                    }).catch(() => {
+                        this.isInvalid = true;
+                    });
             })
 
         },
