@@ -212,4 +212,11 @@ describe("Test Realtime Drawing", () => {
             })
         })
     })
+
+    it("Test Notification", async () => {
+            await clientSocket2.on("receiveCollaborationInvite", async (result) => {
+                expect(result).toStrictEqual('user@test.it');
+            });
+            await clientSocket.emit("inviteCollaborator", ACCESS_TOKEN_1, 'user22@test.it');
+        })
 });
