@@ -188,7 +188,7 @@ describe("Test Realtime Drawing", () => {
             })
         });
     });
-
+    let lineToTest;
     let drawEndPromise = new Promise((resolve) => {
         it("Test Whiteboard Draw End", async () => {
             drawingPromise.then(() => {
@@ -196,6 +196,7 @@ describe("Test Realtime Drawing", () => {
                 clientSocket2.on("drawEndBC", (line, lineId) => {
                     expect(line).toStrictEqual(lineToSend);
                     expect(lineId).toBe(traitID);
+                    lineToTest = line;
                     resolve();
                 });
                 clientSocket.emit("drawEnd", lineToSend, traitID, ACCESS_TOKEN_1);
@@ -206,9 +207,11 @@ describe("Test Realtime Drawing", () => {
     it("Test Trait in Whiteboard",  (done)=>{
         drawEndPromise.then(() =>{
              request(app).get("/api/whiteboard/" + WHITEBOARD_ID)
-                .send().set({Authorization: `Bearer ${ACCESS_TOKEN_1}`}).then((whiteboard) => {
-                expect(whiteboard.body.whiteboardData._id).toBe(WHITEBOARD_ID);
-                 done();
+                 .send()
+                 .set({Authorization: `Bearer ${ACCESS_TOKEN_1}`})
+                 .then((whiteboard) => {
+                    expect(Object.values(whiteboard.body.whiteboardData.traits)[0]).toStrictEqual(lineToTest);
+                    done();
             })
         })
     })
