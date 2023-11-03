@@ -18,8 +18,6 @@ services:
             main:
                 aliases:
                     - web
-        ports:
-            - "8080:8080"
         volumes:
             - .:/usr/src/app/app
             - /usr/src/app/app/node_modules
@@ -53,4 +51,3 @@ volumes:
 
 networks:
     main:
-        
