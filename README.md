@@ -12,15 +12,19 @@ Distribuited System Project A.A. 2022-2023
 - Vue-cli
 
 ## Get Started
+Starts the entire environment:
 ```
 make run
 ```
-Starts the entire environment
+Stops the entire environment:
 
 ```
 make stop
 ```
-Stops the entire environment
+Use the following address to connect to the application: 
+
+_http://localhost:80_
+
 
 ## Authors
 
