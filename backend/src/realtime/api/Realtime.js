@@ -243,4 +243,8 @@ module.exports = class Realtime {
         socket.on('disconnect', leftListener);
     }
 
+    close() {
+        this.io.close()
+    }
+
 }

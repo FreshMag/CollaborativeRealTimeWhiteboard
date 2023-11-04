@@ -21,6 +21,8 @@ let WHITEBOARD_ID = 0;
 let mongod;
 let clientSocket;
 let clientSocket2;
+let server;
+let rt;
 
 let socketConnectionPromise;
 beforeAll(async () => {
@@ -90,8 +92,8 @@ beforeAll(async () => {
         .set({ Authorization: `Bearer ${ACCESS_TOKEN_1}` })
     expect(inviteResponse.statusCode).toBe(200);
 
-    const server = http.createServer();
-    const rt = new Realtime(server, whiteboardController);
+    server = http.createServer();
+    rt = new Realtime(server, whiteboardController);
     rt.listen();
 
     await new Promise((resolve) => {
@@ -123,16 +125,13 @@ beforeAll(async () => {
     });
 });
 
-afterAll((done) => {
-    Whiteboard.findByIdAndDelete(WHITEBOARD_ID).then(()=>{
-        User.findByIdAndDelete(USER_ID_1).then(()=>{
-            User.findByIdAndDelete(USER_ID_2).then(()=>{
-                mongod.stop().then(()=>{
-                    done();
-                });
-            });
-        });
-    });
+afterAll(async () => {
+    await Whiteboard.findByIdAndDelete(WHITEBOARD_ID)
+    await User.findByIdAndDelete(USER_ID_1)
+    await User.findByIdAndDelete(USER_ID_2)
+    await mongod.stop()
+    server.close()
+    rt.close()
 });
 
 describe("Test Realtime Drawing", () => {
@@ -224,5 +223,6 @@ describe("Test Realtime Drawing", () => {
                 expect(result).toStrictEqual('user@test.it');
             });
             await clientSocket.emit("inviteCollaborator", ACCESS_TOKEN_1, 'user22@test.it');
+
         })
 });
