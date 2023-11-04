@@ -123,13 +123,16 @@ beforeAll(async () => {
     });
 });
 
-afterAll(async () => {
-    await User.findByIdAndDelete(USER_ID_1);
-    await Whiteboard.findByIdAndDelete(WHITEBOARD_ID);
-    await User.findByIdAndDelete(USER_ID_2);
-    await mongoose.disconnect();
-    await mongod.stop();
-    await clientSocket.disconnect();
+afterAll((done) => {
+    Whiteboard.findByIdAndDelete(WHITEBOARD_ID).then(()=>{
+        User.findByIdAndDelete(USER_ID_1).then(()=>{
+            User.findByIdAndDelete(USER_ID_2).then(()=>{
+                mongod.stop().then(()=>{
+                    done();
+                });
+            });
+        });
+    });
 });
 
 describe("Test Realtime Drawing", () => {

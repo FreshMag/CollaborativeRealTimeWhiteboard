@@ -6,7 +6,7 @@ const app = require("../server");
 require("dotenv").config();
 
 const User = mongoose.model('User', userSchema);
-
+let mongod;
 let USER_ID = "";
 let ACCESS_TOKEN = "";
 

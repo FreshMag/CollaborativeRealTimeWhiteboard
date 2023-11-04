@@ -12,7 +12,7 @@ const Notification = mongoose.model('Notification', notificationSchema);
 let USER_ID = "";
 let ACCESS_TOKEN = "";
 let CREATED_WHITEBOARDS = []
-
+let mongod;
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   process.env.DB_ADDRESS = mongod.getUri();
