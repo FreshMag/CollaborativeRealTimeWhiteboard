@@ -1,4 +1,4 @@
-const Authorizer = require("../auth/Authorizer");
+const Authorizer = require("../old_auth/Authorizer");
 const {Model} = require("../models/model");
 const {Request, Response} = require('express');
 

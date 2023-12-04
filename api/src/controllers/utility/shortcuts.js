@@ -1,7 +1,7 @@
 
 const {Response} = require('express');
 const {Model} = require("../../models/model");
-const {Authorizer} = require("../../auth/Authorizer")
+const {Authorizer} = require("../../old_auth/Authorizer")
 
 /**
  * Shortcut function for sending an Internal Server Error response (status 500)

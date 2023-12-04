@@ -20,7 +20,7 @@ const express = require('express');
 const router = express.Router();
 const app = express();
 const cookieParser = require('cookie-parser');
-const {requestMethod} = require("./src/auth/requestMethod");
+const {requestMethod} = require("./src/old_auth/requestMethod");
 const http = require('http');
 const cors = require('cors');
 
@@ -59,7 +59,7 @@ app.use("/api/userSetting", tokenValidator)
 /*
  * ROUTES
  */
-router.use("/auth", authRoutes);
+router.use("/old_auth", authRoutes);
 router.use("/profile", profileRoutes);
 router.use("/whiteboard", whiteboardRoutes);
 router.use("/userSetting", userSettingsRoutes);
@@ -72,7 +72,7 @@ const server = http.createServer(app);
  */
 const Realtime = require('./src/realtime/api/Realtime');
 const whiteboardController = require("./src/controllers/whiteboardController");
-const {createTestEnvironment} = require("./src/auth/test/testUtility");
+const {createTestEnvironment} = require("./src/old_auth/test/testUtility");
 const rt = new Realtime(server, whiteboardController);
 rt.listen();
 exports.realtime = rt;

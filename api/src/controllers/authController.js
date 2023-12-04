@@ -1,4 +1,4 @@
-const {Authenticator} = require( "../auth/Authenticator");
+const {Authenticator} = require( "../old_auth/Authenticator");
 const {Model} = require ("../models/model");
 const {log, logErr} = require("../util/consoleUtil");
 const {Request, Response} = require("express")
