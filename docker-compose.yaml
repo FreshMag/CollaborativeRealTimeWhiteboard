@@ -13,7 +13,7 @@ services:
                     - nginx
     frontend:
         image: whiteboard/frontend:latest
-        build: ./frontend/whiteboard-frontend
+        build: web/whiteboard-frontend
         networks:
             main:
                 aliases:
